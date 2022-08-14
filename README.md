@@ -1,6 +1,5 @@
 # spm-frontend
 
-[![Board Status](https://dev.azure.com/SLIIT-Y3S1/6af1d574-43c2-4757-a687-e53a4e849872/85c2c4ed-31d9-4270-97ae-7c5a220b2f1d/_apis/work/boardbadge/2166ceaf-2f28-443a-9754-a884bb602f02?columnOptions=1)](https://dev.azure.com/SLIIT-Y3S1/6af1d574-43c2-4757-a687-e53a4e849872/_boards/board/t/85c2c4ed-31d9-4270-97ae-7c5a220b2f1d/Microsoft.RequirementCategory/)
 
 # Getting Started with Create React App
 
