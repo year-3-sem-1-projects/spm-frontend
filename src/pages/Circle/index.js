@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/ui/Navbar'
 import Button from '@mui/material/Button'
-import SnackBar from '../../components/ui/SnackBar'
 import { TextField, useFormControl } from '@mui/material'
 import { createTest, readTest } from '../../services/Test'
 import imageUpload from '../../utils/imageUpload'
@@ -25,8 +24,8 @@ const Circle = () => {
     console.log(read)
   }
   const handleImageUpload = async () => {
-    const response = await imageUpload(image, IMG_PATH)
-    console.log(response)
+    const imageUrl = await imageUpload(image, IMG_PATH)
+    setUrl(imageUrl)
   }
   return (
     <div>
@@ -56,6 +55,7 @@ const Circle = () => {
       <button onClick={handleImageUpload}>Upload Image</button>
 
       {read ? read.map(r => <p>{r.name}</p>) : <p>No Names</p>}
+      {url ? <p>{url}</p> : 'no url'}
     </div>
   )
 }
