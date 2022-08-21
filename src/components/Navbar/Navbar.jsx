@@ -18,7 +18,7 @@ import GroupIcon from '@mui/icons-material/Groups'
 import PersonIcon from '@mui/icons-material/Person'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { Link } from 'react-router-dom'
-import SearchAppBar from './SearchBar'
+import SearchAppBar from '../Searchbar/SearchBar'
 import CustomizedMenus from './CustomMenu'
 
 const TEST_STYLE = {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import Navbar from '../../components/ui/Navbar'
+import Navbar from '../../components/Navbar/Navbar'
 import Button from '@mui/material/Button'
-import { TextField, useFormControl } from '@mui/material'
+import { TextField } from '@mui/material'
 import { createTest, readTest } from '../../services/Test'
 import imageUpload from '../../utils/imageUpload'
 
