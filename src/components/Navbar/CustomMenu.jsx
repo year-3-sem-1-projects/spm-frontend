@@ -126,7 +126,7 @@ export default function CustomizedMenus({
         open={open}
         onClose={handleClose}
       >
-        {settings.map(setting => (
+        {settings.map((setting, key) => (
           // <Link to={`/${setting}`}>
             <MenuItem
               sx={{
@@ -134,7 +134,7 @@ export default function CustomizedMenus({
                 // padding: '10px 50px',
                 // transform: 'translateX(-20%)',
               }}
-              key={setting}
+              key={key}
               onClick={handleCloseUserMenu}
             >
               <Typography textAlign="center">
