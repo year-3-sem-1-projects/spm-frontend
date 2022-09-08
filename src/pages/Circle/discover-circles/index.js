@@ -16,6 +16,7 @@ import Circle from './Circle'
 import { TEST_STYLE } from './Circle'
 import FilterOptions from '../../../components/FilterOptions/FilterOptions'
 import { getAllCircles } from '../../../services/Circle'
+import CreateCircleDialog from './CreateCircleDialog'
 
 const DiscoverCircles = () => {
   const [circleData, setCircleData] = useState([])
@@ -23,6 +24,7 @@ const DiscoverCircles = () => {
   const [filterOptions, setFilterOptions] = useState(['ALL'])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     getAllCircles()
@@ -46,6 +48,10 @@ const DiscoverCircles = () => {
         setCircleData([])
       })
   }, [filterOptions])
+
+  const handleOpen = () => {
+    setIsOpen(!isOpen)
+  }
 
   const handleClickCategory = (category, checked) => {
     console.log('category', category)
@@ -99,6 +105,10 @@ const DiscoverCircles = () => {
                       marginTop: '10px',
                     }}
                   >
+                    <CreateCircleDialog
+                      isDialogOpened={isOpen}
+                      handleCloseDialog={() => setIsOpen(false)}
+                    />
                     <Button
                       variant="outlined"
                       startIcon={<AddCircleOutlineIcon />}
@@ -107,6 +117,7 @@ const DiscoverCircles = () => {
                         color: 'black',
                         marginRight: '10px',
                       }}
+                      onClick={() => handleOpen()}
                     >
                       Create Circle
                     </Button>
