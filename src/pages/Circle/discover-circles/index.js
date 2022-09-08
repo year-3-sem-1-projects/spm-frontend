@@ -28,7 +28,15 @@ const DiscoverCircles = () => {
     getAllCircles()
       .then(res => {
         setCircleData(res)
-        setFilterData(res.filter(item => filterOptions.includes(item.category)))
+        if (filterOptions.includes('ALL')) {
+          setFilterData(res)
+        } else {
+          setFilterData(
+            res.filter(item => {
+              return filterOptions.includes(item.category)
+            }),
+          )
+        }
         setLoading(false)
       })
       .catch(err => {
@@ -37,19 +45,7 @@ const DiscoverCircles = () => {
         setError(true)
         setCircleData([])
       })
-
-    if ('ALL' in filterOptions) {
-      setFilterData(circleData)
-    } else {
-      if (filterOptions.length === 0) {
-        setFilterData([])
-      } else {
-        setFilterData(
-          circleData.filter(item => filterOptions.includes(item.category)),
-        )
-      }
-    }
-  }, [])
+  }, [filterOptions])
 
   const handleClickCategory = (category, checked) => {
     console.log('category', category)
@@ -68,6 +64,7 @@ const DiscoverCircles = () => {
     console.log('filter', filterData)
     console.log('circle', circleData)
     console.log('filterOptions', filterOptions)
+
     return (
       <>
         <Container>
