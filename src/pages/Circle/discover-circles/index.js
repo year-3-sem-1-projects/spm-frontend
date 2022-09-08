@@ -11,19 +11,40 @@ import {
 } from '@mui/material'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Circle from './Circle'
 import { TEST_STYLE } from './Circle'
-const Categories = [
-  'Technology',
-  'Science',
-  'Art & Design',
-  'Crypto',
-  'Health & Fitness',
-  'Finance & Business',
-]
+import FilterOptions from '../../../components/FilterOptions/FilterOptions'
+import { getAllCircles } from '../../../services/Circle'
 
 const DiscoverCircles = () => {
+  const [circleData, setCircleData] = useState([])
+  const [filterData, setFilterData] = useState([])
+  const [filterOptions, setFilterOptions] = useState(['ALL'])
+
+  useEffect(() => {
+    getAllCircles()
+  }, [circleData])
+
+  const handleClickCategory = (category, checked) => {
+    if (checked) {
+      setFilterOptions([...filterOptions, category])
+    } else {
+      setFilterOptions(filterOptions.filter(item => item !== category))
+    }
+
+    if ('ALL' in filterOptions) {
+      setFilterData(circleData)
+    } else {
+      if (filterOptions.length === 0) {
+        setFilterData([])
+      } else {
+        setFilterData(
+          circleData.filter(item => filterOptions.includes(item.category)),
+        )
+      }
+    }
+  }
   return (
     <>
       <Container>
@@ -35,39 +56,7 @@ const DiscoverCircles = () => {
           }}
         >
           <Grid item md={3}>
-            <Paper className={`p-5`} elevation={3}>
-              <Typography
-                variant="h5"
-                className={`pb-3`}
-                sx={{
-                  fontWeight: 'bold',
-                }}
-              >
-                Categories
-              </Typography>
-              <FormGroup>
-                <FormControlLabel
-                  control={<Checkbox defaultChecked />}
-                  label={`All Categories`}
-                  onChange={e =>
-                    console.log(`All Categories`, e.target.checked)
-                  }
-                  sx={{
-                    color: 'black',
-                  }}
-                />
-                {Categories.map(category => (
-                  <FormControlLabel
-                    control={<Checkbox />}
-                    label={category}
-                    onChange={e => console.log(category, e.target.checked)}
-                    sx={{
-                      color: 'black',
-                    }}
-                  />
-                ))}
-              </FormGroup>
-            </Paper>
+            <FilterOptions handleClick={handleClickCategory} />
           </Grid>
           <Grid item md={9}>
             <Grid
@@ -129,6 +118,22 @@ const DiscoverCircles = () => {
                 </Typography>
                 <Typography variant="body1">Circles you might like</Typography>
                 <Box className={`flex flex-wrap gap-10 mt-5`}>
+                  {filterData.length > 0 ? (
+                    filterData.map(item => (
+                      <Circle
+                        key={item.name}
+                        name={item.name}
+                        iconImage={item.iconImage}
+                        coverImage={item.coverImage}
+                        description={item.description}
+                      />
+                    ))
+                  ) : (
+                    <Typography variant="body1">
+                      No circles found. Try changing your filters.
+                    </Typography>
+                  )}
+
                   <Circle />
                   <Circle />
                   <Circle />
