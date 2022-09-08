@@ -1,0 +1,105 @@
+import {
+  Avatar,
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  IconButton,
+  Typography,
+} from '@mui/material'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import truncate from '../../../utils/truncateText'
+
+export const TEST_STYLE = {
+  outlineWidth: '1px',
+  outlineColor: '#000',
+  outlineStyle: 'solid',
+}
+
+const CIRCLE = {
+  name: "Chris's Circle 001",
+  iconImage: 'https://picsum.photos/id/237/200/200',
+  coverImage:
+    'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp1920735.jpg&f=1&nofb=1',
+  description:
+    'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica',
+}
+
+const Circle = () => {
+  return (
+    <>
+      <Link to={`${CIRCLE.name}`}>
+        <Card
+          sx={{ maxWidth: 200, maxHeight: 250 }}
+          onClick={() => console.log('clicked')}
+        >
+          <CardActionArea sx={TEST_STYLE}>
+            <CardMedia
+              component="img"
+              height="140"
+              image={CIRCLE.coverImage}
+              alt="cover image"
+              sx={{
+                objectFit: 'cover',
+                objectPosition: 'center',
+                height: '100px',
+              }}
+            />
+            <IconButton
+              sx={[
+                {
+                  p: 0,
+                  transform: 'translate(100%, -50%)',
+                },
+              ]}
+              disableRipple
+            >
+              <Avatar
+                alt={CIRCLE.name}
+                src={CIRCLE.iconImage}
+                sx={[
+                  {
+                    width: 70,
+                    height: 70,
+                  },
+                ]}
+              />
+            </IconButton>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+                flexDirection: 'column',
+                transform: 'translate(0, -20%)',
+              }}
+            >
+              <Typography gutterBottom variant="h6">
+                {CIRCLE.name}
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  textAlign: 'center',
+                  pb: 2,
+                  pl: 1,
+                  pr: 1,
+                }}
+                gutterBottom
+                width="100%"
+              >
+                {truncate(CIRCLE.description)}
+              </Typography>
+            </Box>
+          </CardActionArea>
+        </Card>
+      </Link>
+    </>
+  )
+}
+
+export default Circle
