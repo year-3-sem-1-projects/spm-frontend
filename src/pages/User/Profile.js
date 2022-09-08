@@ -1,7 +1,7 @@
 import React from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 
-const index = () => {
+const Profile = () => {
   return (
     <div>
       <Navbar />
@@ -9,4 +9,4 @@ const index = () => {
   )
 }
 
-export default index
+export default Profile

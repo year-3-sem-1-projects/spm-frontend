@@ -60,12 +60,10 @@ const ResponsiveAppBar = () => {
     if (currentUser) {
       const decodedToken = jwt_decode(currentUser)
       setUSER(decodedToken.data)
-      console.log(USER)
     } else {
       setUSER(unregisteredUser)
     }
   }, [currentUser])
-  console.log(USER.username)
   const handleOpenNavMenu = event => {
     setAnchorElNav(event.currentTarget)
   }
