@@ -6,7 +6,7 @@ import {
   Typography,
 } from '@mui/material'
 import React from 'react'
-import Categories from '../../constants/Categories'
+import Categories from '../../constants/categories'
 
 const FilterOptions = ({ handleClick }) => {
   return (
@@ -24,7 +24,7 @@ const FilterOptions = ({ handleClick }) => {
         <FormGroup>
           <FormControlLabel
             control={<Checkbox defaultChecked />}
-            label={`All Categories`}
+            label="All Categories"
             onChange={e => handleClick(`ALL`, e.target.checked)}
             sx={{
               color: 'black',
@@ -33,8 +33,8 @@ const FilterOptions = ({ handleClick }) => {
           {Categories.map(category => (
             <FormControlLabel
               control={<Checkbox />}
-              label={category}
-              onChange={e => handleClick(category, e.target.checked)}
+              label={`${category.label}`}
+              onChange={e => handleClick(category.value, e.target.checked)}
               sx={{
                 color: 'black',
               }}

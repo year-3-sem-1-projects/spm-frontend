@@ -187,9 +187,9 @@ const ResponsiveAppBar = () => {
                   display: { xs: 'block', md: 'none' },
                 }}
               >
-                {pages.map(page => (
+                {pages.map((page, index) => (
                   <Link to={`/${page}`}>
-                    <MenuItem key={page} onClick={handleCloseNavMenu} sx={{}}>
+                    <MenuItem key={index} onClick={handleCloseNavMenu} sx={{}}>
                       <Typography
                         textAlign="center"
                         sx={{ paddingRight: '10px' }}

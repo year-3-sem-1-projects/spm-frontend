@@ -18,12 +18,21 @@ export const TEST_STYLE = {
   outlineStyle: 'solid',
 }
 
+const PLACEHOLDER = {
+  icon: '',
+  cover:
+    'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp1920735.jpg&f=1&nofb=1',
+}
+
 const Circle = ({ name, description, iconImage, coverImage }) => {
+  iconImage = iconImage || PLACEHOLDER.icon
+  coverImage = coverImage || PLACEHOLDER.cover
+  console.log('Circle', name, description, iconImage, coverImage)
   return (
     <>
       <Link to={`${name}`}>
-        <Card sx={{ maxWidth: 200, maxHeight: 250 }}>
-          <CardActionArea sx={TEST_STYLE}>
+        <Card sx={{ width: 200, height: 250 }}>
+          <CardActionArea>
             <CardMedia
               component="img"
               height="140"
