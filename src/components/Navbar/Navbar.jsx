@@ -20,12 +20,10 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import { Link } from 'react-router-dom'
 import SearchAppBar from '../Searchbar/SearchBar'
 import CustomizedMenus from './CustomMenu'
+import { useEffect, useState } from 'react'
+import jwt_decode from 'jwt-decode'
+import { useNavigate } from 'react-router-dom'
 
-const TEST_STYLE = {
-  outlineWidth: '1px',
-  outlineColor: '#000',
-  outlineStyle: 'solid',
-}
 
 const ICON_SIZE = 'medium'
 const pages = ['', 'Question', 'Circle']
@@ -41,16 +39,33 @@ const settingList = {
 }
 
 const LOGO = 'Edupox'
-const USER = {
+
+const unregisteredUser = {
   id: '001',
-  name: 'Toshinori Yagi',
+  username: 'Toshinori Yagi',
   image: 'https://i.redd.it/8lczu2vop1911.jpg',
 }
 
+
 const ResponsiveAppBar = () => {
+
+  const navigate = useNavigate()
+  
+  const currentUser = localStorage.getItem('token')
+  const [USER, setUSER] = useState(unregisteredUser)
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
 
+  useEffect(() => {
+    if (currentUser) {
+      const decodedToken = jwt_decode(currentUser)
+      setUSER(decodedToken.data)
+      console.log(USER)
+    } else {
+      setUSER(unregisteredUser)
+    }
+  }, [currentUser])
+  console.log(USER.username)
   const handleOpenNavMenu = event => {
     setAnchorElNav(event.currentTarget)
   }
@@ -64,6 +79,13 @@ const ResponsiveAppBar = () => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null)
+  }
+
+  const handleLogout = () => {
+    
+    localStorage.removeItem('token')
+    window.location.reload()
+    navigate('/')
   }
 
   return (
@@ -237,8 +259,8 @@ const ResponsiveAppBar = () => {
                 <IconButton
                   onClick={handleOpenUserMenu}
                   sx={{ p: 0, marginRight: '20px' }}
-                >
-                  <Avatar alt={USER.name} src={USER.image} />
+                >{localStorage.getItem('token') ? 
+                  <Avatar alt={USER.username} src={USER.image} /> : null}
                 </IconButton>
               </Tooltip>
               <Menu
@@ -260,7 +282,7 @@ const ResponsiveAppBar = () => {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map(setting => (
-                  <Link to={`/${setting}`}>
+                  // <Link to={`/${setting}`}>
                     <MenuItem
                       sx={{
                         padding: '10px 10px 10px 10px',
@@ -271,9 +293,9 @@ const ResponsiveAppBar = () => {
                       <Typography textAlign="center">
                         {settingList[`/${setting}`]}
                       </Typography>
-                      <Typography textAlign="center">{setting}</Typography>
+                      <Typography onClick={handleLogout} textAlign="center">{setting}</Typography>
                     </MenuItem>
-                  </Link>
+                  // </Link>
                 ))}
               </Menu>
             </Box>
