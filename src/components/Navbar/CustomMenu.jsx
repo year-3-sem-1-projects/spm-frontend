@@ -3,22 +3,14 @@ import { styled, alpha } from '@mui/material/styles'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import EditIcon from '@mui/icons-material/Edit'
-import Divider from '@mui/material/Divider'
-import ArchiveIcon from '@mui/icons-material/Archive'
-import FileCopyIcon from '@mui/icons-material/FileCopy'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import { Link } from 'react-router-dom'
-import { Avatar, Box, IconButton, Tooltip, Typography } from '@mui/material'
 
-const TEST_STYLE = {
-  outlineWidth: '1px',
-  outlineColor: '#000',
-  outlineStyle: 'solid',
-}
+import { Avatar, Box, IconButton, Tooltip, Typography } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+
 
 const StyledMenu = styled(props => (
+  
   <Menu
     elevation={0}
     anchorOrigin={{
@@ -61,6 +53,7 @@ const StyledMenu = styled(props => (
   },
 }))
 
+
 export default function CustomizedMenus({
   USER,
   settings,
@@ -76,8 +69,16 @@ export default function CustomizedMenus({
     setAnchorEl(null)
   }
 
-  return (
+  const navigate = useNavigate()
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    window.location.reload()
+    navigate('/')
+  }
+
+  return (    
     <Box sx={[{ display: { ms: 'none', md: 'block' } }]}>
+      {localStorage.getItem('token') ? 
       <Button
         id="demo-customized-button"
         aria-controls={open ? 'demo-customized-menu' : undefined}
@@ -92,9 +93,11 @@ export default function CustomizedMenus({
           <Box
             sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}
           >
+            {localStorage.getItem('token') ? 
             <IconButton sx={{ p: 0, marginRight: '20px' }} disableRipple>
-              <Avatar alt={USER.name} src={USER.image} />
-            </IconButton>
+               <Avatar alt={USER.username} src={USER.image} /> 
+            </IconButton> : null}
+            {localStorage.getItem('token') ? 
             <Typography
               variant="h7"
               noWrap
@@ -108,11 +111,12 @@ export default function CustomizedMenus({
                 fontSize: '13px',
               }}
             >
-              {USER.name}
-            </Typography>
+              {USER.username}
+            </Typography> : null}
           </Box>
         </Tooltip>
-      </Button>
+      </Button> : null}
+      {localStorage.getItem('token') ? 
       <StyledMenu
         id="demo-customized-menu"
         MenuListProps={{
@@ -123,7 +127,7 @@ export default function CustomizedMenus({
         onClose={handleClose}
       >
         {settings.map((setting, key) => (
-          <Link to={`/${setting}`}>
+          // <Link to={`/${setting}`}>
             <MenuItem
               sx={{
                 flexGrow: 1,
@@ -136,11 +140,11 @@ export default function CustomizedMenus({
               <Typography textAlign="center">
                 {settingList[`/${setting}`]}
               </Typography>
-              <Typography textAlign="center">{setting}</Typography>
+              <Typography onClick={handleLogout} textAlign="center">{setting}</Typography>
             </MenuItem>
-          </Link>
+          // </Link>
         ))}
-      </StyledMenu>
+      </StyledMenu> : null}
     </Box>
   )
 }
