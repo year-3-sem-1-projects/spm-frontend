@@ -8,19 +8,15 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import categories from '../../constants/categories';
 
-export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog }) {
+export default function EditQuestionDialog({ isEditDialogOpen, handleCloseEditDialog, editData }) {
 
   const [fullWidth] = useState(true);
   const [maxWidth] = useState("sm");
 
-  const [question, setQuestion] = useState('');
-  const [category, setCategory] = useState('');
+  const [question, setQuestion] = useState(editData.question);
+  const [category, setCategory] = useState(editData.category);
   const [questionError, setQuestionError] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
-
-  const handleClose = () => {
-    handleCloseDialog(false);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault(); 
@@ -42,6 +38,7 @@ export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog })
       }
       console.log(data);
     }
+    handleCloseEditDialog()
   }
 
   return (
@@ -49,8 +46,8 @@ export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog })
       <Dialog
         fullWidth={fullWidth}
         maxWidth={maxWidth}
-        open={isDialogOpened}
-        onClose={handleClose}
+        open={isEditDialogOpen}
+        onClose={handleCloseEditDialog}
         aria-labelledby="max-width-dialog-title"
       >
         <DialogTitle>Add Your Question</DialogTitle>
@@ -64,6 +61,7 @@ export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog })
             <TextField
               onChange={(e) => setQuestion(e.target.value)}
               label="Question"
+              value={editData.question}
               placeholder="Type your question here"
               variant="filled"
               fullWidth
@@ -77,7 +75,7 @@ export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog })
               onChange={(e) => setCategory(e.target.value)}
               select
               label="Category"
-              value={category}
+              value={category === '' ? editData.category : category}
               helperText="Please select a cateogry"
               fullWidth
               required
@@ -92,8 +90,8 @@ export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog })
             </TextField>
           </DialogContent>
           <DialogActions>
-            <Button variant="text"  onClick={handleClose} type="Submit">Cancel</Button>
-            <Button onClick={handleSubmit} variant="contained">Add</Button>
+            <Button variant="text"  onClick={handleCloseEditDialog}>Cancel</Button>
+            <Button onClick={handleSubmit} variant="contained">Save</Button>
           </DialogActions>
         </form>
       </Dialog>
