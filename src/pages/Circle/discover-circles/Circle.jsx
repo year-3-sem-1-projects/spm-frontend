@@ -18,7 +18,7 @@ export const TEST_STYLE = {
   outlineStyle: 'solid',
 }
 
-const PLACEHOLDER = {
+export const PLACEHOLDER = {
   icon: '',
   cover:
     'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp1920735.jpg&f=1&nofb=1',
