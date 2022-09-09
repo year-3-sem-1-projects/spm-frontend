@@ -28,10 +28,10 @@ const TEST_STYLE = {
 }
 
 const ICON_SIZE = 'medium'
-const pages = ['', 'Question', 'Circle']
+const pages = ['', 'Question/recommended', 'Circle']
 const pageList = {
   '/': <HomeIcon fontSize={ICON_SIZE} />,
-  '/Question': <QuizIcon fontSize={ICON_SIZE} />,
+  '/Question/recommended': <QuizIcon fontSize={ICON_SIZE} />,
   '/Circle': <GroupIcon fontSize={ICON_SIZE} />,
 }
 const settings = ['Profile', 'Logout']
@@ -141,6 +141,7 @@ const ResponsiveAppBar = () => {
                     },
                   ]}
                 >
+                  
                   <Link style={{ width: '100%' }} to={`/${page}`}>
                     {pageList[`/${page}`]}
                   </Link>
