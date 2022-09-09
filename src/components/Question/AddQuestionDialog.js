@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -10,21 +10,38 @@ import categories from '../../constants/categories';
 
 export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog }) {
 
-  const [fullWidth] = React.useState(true);
-  const [maxWidth] = React.useState("sm");
-  const [category, setCategory] = React.useState('EUR');
+  const [fullWidth] = useState(true);
+  const [maxWidth] = useState("sm");
 
-  const handleChange = (event) => {
-    setCategory(event.target.value);
-  };
+  const [question, setQuestion] = useState('');
+  const [category, setCategory] = useState('');
+  const [questionError, setQuestionError] = useState(false);
+  const [categoryError, setCategoryError] = useState(false);
 
   const handleClose = () => {
     handleCloseDialog(false);
   };
 
-  function handleSubmit() {
+  const handleSubmit = (e) => {
+    e.preventDefault(); 
 
+    setQuestionError(false);
+    setCategoryError(false);
+
+    if(question === '') {
+      setQuestionError(true);
+    }
+    if(category === '') {
+      setCategoryError(true);
+    }
     
+    if(question && category) {
+      const data = {
+        question,
+        category
+      }
+      console.log(data);
+    }
   }
 
   return (
@@ -37,38 +54,48 @@ export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog })
         aria-labelledby="max-width-dialog-title"
       >
         <DialogTitle>Add Your Question</DialogTitle>
-        <DialogContent>
-          {/* user component */}
-          <TextField
-            id="question-content"
-            label="Question"
-            type="text"
-            placeholder="Type your question here"
-            multiline
-            fullWidth
-            variant="filled"
-            rows={5}
-            style={{marginBottom: "15px"}}
-          />
-          <TextField
-            id="question-category"
-            select
-            label="Category"
-            value={category}
-            onChange={handleChange}
-            helperText="Please select a cateogry"
-          >
-            {categories.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-        </TextField>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="text"  onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained">Add</Button>
-       </DialogActions>
+        <form 
+          noValidate 
+          autoComplete="off"
+          onSubmit={handleSubmit} 
+        >
+          <DialogContent>
+            {/* user component */}
+            <TextField
+              onChange={(e) => setQuestion(e.target.value)}
+              label="Question"
+              placeholder="Type your question here"
+              variant="filled"
+              fullWidth
+              multiline
+              rows={5}
+              required
+              error={questionError}
+              sx={{marginTop: 2, marginBottom: 2, display: 'block'}}
+            />
+            <TextField
+              onChange={(e) => setCategory(e.target.value)}
+              select
+              label="Category"
+              value={category}
+              helperText="Please select a cateogry"
+              fullWidth
+              required
+              error={categoryError}
+              sx={{marginTop: 2, marginBottom: 2, display: 'block'}}
+            >
+              {categories.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="text"  onClick={handleClose} type="Submit">Cancel</Button>
+            <Button onClick={handleSubmit} variant="contained">Add</Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </React.Fragment>
   );

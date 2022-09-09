@@ -16,7 +16,16 @@ export default function AddQuestion() {
         isDialogOpened={isOpen}
         handleCloseDialog={() => setIsOpen(false)}
       />
-      <Button size="large" variant="outlined" startIcon={<QuestionMarkIcon />} onClick={() => handleOpen()}>Add Question</Button>
+      <Button 
+        fullWidth 
+        size="large" 
+        variant="outlined" 
+        startIcon={<QuestionMarkIcon />} 
+        onClick={() => handleOpen()}
+        sx={{height: 75}}
+      >
+        Add Question
+      </Button>
     </div>
   );
 }
