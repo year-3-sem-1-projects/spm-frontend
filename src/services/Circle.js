@@ -15,3 +15,11 @@ export const getCircle = async name => {
     console.error(err)
   }
 }
+
+export const createCircle = async data => {
+  try {
+    return (await axios.post('/api/circle/add', data)).data
+  } catch (err) {
+    console.error(err)
+  }
+}

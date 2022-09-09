@@ -14,15 +14,14 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined'
 import React, { useState, useEffect } from 'react'
 import Circle from './Circle'
-import { TEST_STYLE } from './Circle'
 import FilterOptions from '../../../components/FilterOptions/FilterOptions'
 import { getAllCircles } from '../../../services/Circle'
 import Loading from '../../../components/Loading/Loading'
 import { Link } from 'react-router-dom'
 import CreateCircleDialog from './CreateCircleDialog'
+import GetCurrentUser from '../../../hooks/getCurrentUser'
 
 const DiscoverCircles = () => {
-  const USER_EMAIL = localStorage.getItem('email')
   const [circleData, setCircleData] = useState([])
   const [filterData, setFilterData] = useState([])
   const [filterOptions, setFilterOptions] = useState(['ALL'])
@@ -31,54 +30,34 @@ const DiscoverCircles = () => {
   const [follow, setFollow] = useState([])
   const [isOpen, setIsOpen] = useState(false)
 
+  const user = GetCurrentUser()
   useEffect(() => {
-    getAllCircles()
-      .then(res => {
-        setCircleData(res)
-        setFollow(
-          res.filter(circle => {
-            if (circle.admin === USER_EMAIL) return true
-            if (circle.members) {
-              const member = circle.members.find(
-                member => member.email === USER_EMAIL,
-              )
-
-              if (member) {
-                return true
-              }
-            }
-            return null
-          }),
-        )
-        if (filterOptions.includes('ALL')) {
-          setFilterData(
+    if (user) {
+      getAllCircles()
+        .then(res => {
+          setCircleData(res)
+          setFollow(
             res.filter(circle => {
-              if (circle.admin === USER_EMAIL)
-                return circle.admin !== USER_EMAIL
+              if (circle.admin === user.email) return true
               if (circle.members) {
                 const member = circle.members.find(
-                  member => member.email === USER_EMAIL,
+                  member => member.email === user.email,
                 )
-                console.log('member', member)
                 if (member) {
-                  return null
+                  return true
                 }
               }
-              return circle
+              return null
             }),
           )
-        } else {
-          setFilterData(
-            res
-              .filter(item => {
-                return filterOptions.includes(item.category)
-              })
-              .filter(circle => {
-                if (circle.admin === USER_EMAIL)
-                  return circle.admin !== USER_EMAIL
+          if (filterOptions.includes('ALL')) {
+            setFilterData(
+              res.filter(circle => {
+                if (circle.admin === user.email)
+                  return circle.admin !== user.email
                 if (circle.members) {
                   const member = circle.members.find(
-                    member => member.email === USER_EMAIL,
+                    member => member.email === user.email,
                   )
                   console.log('member', member)
                   if (member) {
@@ -87,26 +66,45 @@ const DiscoverCircles = () => {
                 }
                 return circle
               }),
-          )
-        }
-        setLoading(false)
-      })
-      .catch(err => {
-        console.error(err)
-        setLoading(false)
-        setError(true)
-        setCircleData([])
-      })
-    const discoveryCircles = res => {}
-  }, [filterOptions])
+            )
+          } else {
+            setFilterData(
+              res
+                .filter(item => {
+                  return filterOptions.includes(item.category)
+                })
+                .filter(circle => {
+                  if (circle.admin === user.email)
+                    return circle.admin !== user.email
+                  if (circle.members) {
+                    const member = circle.members.find(
+                      member => member.email === user.email,
+                    )
+                    console.log('member', member)
+                    if (member) {
+                      return null
+                    }
+                  }
+                  return circle
+                }),
+            )
+          }
+          setLoading(false)
+        })
+        .catch(err => {
+          console.error(err)
+          setLoading(false)
+          setError(true)
+          setCircleData([])
+        })
+    }
+  }, [filterOptions, user])
 
   const handleOpen = () => {
     setIsOpen(!isOpen)
   }
 
   const handleClickCategory = (category, checked) => {
-    console.log('category', category)
-    console.log('checked', checked)
     if (checked) {
       setFilterOptions([...filterOptions, category])
     } else {
@@ -157,6 +155,10 @@ const DiscoverCircles = () => {
                     <CreateCircleDialog
                       isDialogOpened={isOpen}
                       handleCloseDialog={() => setIsOpen(false)}
+                      data={circleData}
+                      email={user.email}
+                      setCircleData={setCircleData}
+                      setFollow={setFollow}
                     />
                     <Button
                       variant="outlined"
