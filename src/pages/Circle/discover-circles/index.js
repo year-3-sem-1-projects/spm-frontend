@@ -231,14 +231,6 @@ const DiscoverCircles = () => {
                         No circles found. Try changing your filters.
                       </Typography>
                     )}
-
-                    {/* <Circle />
-                    <Circle />
-                    <Circle />
-                    <Circle />
-                    <Circle />
-                    <Circle />
-                    <Circle /> */}
                   </Box>
                 </Paper>
               </Grid>
