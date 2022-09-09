@@ -85,7 +85,12 @@ const ResponsiveAppBar = () => {
     window.location.reload()
     navigate('/')
   }
+  // const handleProfile = () => {
+  //   // const id = localStorage.getItem('token')._id
+  //   console.log(jwt_decode(localStorage.getItem('token')))
 
+  //   // navigate('/user')
+  // }
   return (
     <AppBar position="sticky">
       <Container maxWidth="xl">

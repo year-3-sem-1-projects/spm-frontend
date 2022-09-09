@@ -51,7 +51,7 @@ const Login = () => {
             type="password"
             placeholder="Re-enter Password"
           />
-          <button className="bg-[#ffbb00] mt-10 font-bold w-1/4 h-10 rounded-[5px] flex justify-center items-center text-base font-normal">
+          <button className="bg-[#ffbb00] mt-10 font-bold w-1/4 h-10 rounded-[5px] flex justify-center items-center text-base">
             Register
           </button>
         </form>

@@ -15,7 +15,9 @@ const Login = () => {
         localStorage.setItem('token', res.data.data.access_token)
         navigate('/')
       })
-      .catch(e => console.error(e))
+      .catch((e) => {
+        alert(e.response.statusText)
+      })
   }
   return (
     <div className="flex justify-center items-center ">
