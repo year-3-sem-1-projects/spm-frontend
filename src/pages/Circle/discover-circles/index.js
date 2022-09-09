@@ -20,6 +20,7 @@ import Loading from '../../../components/Loading/Loading'
 import { Link } from 'react-router-dom'
 import CreateCircleDialog from './CreateCircleDialog'
 import GetCurrentUser from '../../../hooks/getCurrentUser'
+import { DEFAULT_COVER_IMAGE } from '../../../constants/circle'
 
 const DiscoverCircles = () => {
   const [circleData, setCircleData] = useState([])
@@ -234,7 +235,7 @@ const DiscoverCircles = () => {
                             key={item.name}
                             name={item.name}
                             iconImage={item.iconImage}
-                            coverImage={item.coverImage}
+                            coverImage={item?.coverImage || DEFAULT_COVER_IMAGE}
                             description={item.description}
                           />
                         )
