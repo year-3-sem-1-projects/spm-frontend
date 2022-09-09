@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Button,
   Checkbox,
@@ -16,27 +17,76 @@ import Circle from './Circle'
 import { TEST_STYLE } from './Circle'
 import FilterOptions from '../../../components/FilterOptions/FilterOptions'
 import { getAllCircles } from '../../../services/Circle'
+import Loading from '../../../components/Loading/Loading'
+import { Link } from 'react-router-dom'
 import CreateCircleDialog from './CreateCircleDialog'
 
 const DiscoverCircles = () => {
+  const USER_EMAIL = localStorage.getItem('email')
   const [circleData, setCircleData] = useState([])
   const [filterData, setFilterData] = useState([])
   const [filterOptions, setFilterOptions] = useState(['ALL'])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const [follow, setFollow] = useState([])
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     getAllCircles()
       .then(res => {
         setCircleData(res)
+        setFollow(
+          res.filter(circle => {
+            if (circle.admin === USER_EMAIL) return true
+            if (circle.members) {
+              const member = circle.members.find(
+                member => member.email === USER_EMAIL,
+              )
+
+              if (member) {
+                return true
+              }
+            }
+            return null
+          }),
+        )
         if (filterOptions.includes('ALL')) {
-          setFilterData(res)
+          setFilterData(
+            res.filter(circle => {
+              if (circle.admin === USER_EMAIL)
+                return circle.admin !== USER_EMAIL
+              if (circle.members) {
+                const member = circle.members.find(
+                  member => member.email === USER_EMAIL,
+                )
+                console.log('member', member)
+                if (member) {
+                  return null
+                }
+              }
+              return circle
+            }),
+          )
         } else {
           setFilterData(
-            res.filter(item => {
-              return filterOptions.includes(item.category)
-            }),
+            res
+              .filter(item => {
+                return filterOptions.includes(item.category)
+              })
+              .filter(circle => {
+                if (circle.admin === USER_EMAIL)
+                  return circle.admin !== USER_EMAIL
+                if (circle.members) {
+                  const member = circle.members.find(
+                    member => member.email === USER_EMAIL,
+                  )
+                  console.log('member', member)
+                  if (member) {
+                    return null
+                  }
+                }
+                return circle
+              }),
           )
         }
         setLoading(false)
@@ -47,6 +97,7 @@ const DiscoverCircles = () => {
         setError(true)
         setCircleData([])
       })
+    const discoveryCircles = res => {}
   }, [filterOptions])
 
   const handleOpen = () => {
@@ -62,15 +113,13 @@ const DiscoverCircles = () => {
       setFilterOptions(filterOptions.filter(item => item !== category))
     }
   }
+
   if (loading) {
-    return <div>Loading...</div>
+    return <Loading loading={loading} />
   } else if (error) {
     return <div>Error</div>
   } else {
-    console.log('filter', filterData)
-    console.log('circle', circleData)
-    console.log('filterOptions', filterOptions)
-
+    console.log('followData', follow)
     return (
       <>
         <Container>
@@ -134,6 +183,30 @@ const DiscoverCircles = () => {
                       Discover Circles
                     </Button>
                   </Box>
+                  <Box>
+                    {follow.map(circle => (
+                      <Link to={`/circle/${circle.name}`}>
+                        <Paper
+                          className={`flex items-center my-2`}
+                          elevation={1}
+                        >
+                          <Avatar
+                            alt={circle.name}
+                            src={circle.iconImage}
+                            sx={[
+                              {
+                                width: 30,
+                                height: 30,
+                                marginRight: '10px',
+                              },
+                            ]}
+                            variant="square"
+                          />
+                          <Typography variant="body1">{circle.name}</Typography>
+                        </Paper>
+                      </Link>
+                    ))}
+                  </Box>
                 </Paper>
               </Grid>
               <Grid item className={`pb-10`}>
@@ -169,14 +242,6 @@ const DiscoverCircles = () => {
                         No circles found. Try changing your filters.
                       </Typography>
                     )}
-
-                    {/* <Circle />
-                    <Circle />
-                    <Circle />
-                    <Circle />
-                    <Circle />
-                    <Circle />
-                    <Circle /> */}
                   </Box>
                 </Paper>
               </Grid>
