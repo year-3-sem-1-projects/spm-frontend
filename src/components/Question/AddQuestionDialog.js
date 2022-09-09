@@ -10,6 +10,8 @@ import categories from '../../constants/categories';
 
 export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog }) {
 
+  localStorage.getItem('token');
+
   const [fullWidth] = useState(true);
   const [maxWidth] = useState("sm");
 
@@ -36,11 +38,11 @@ export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog })
     }
     
     if(question && category) {
-      const data = {
+      const questionContent = {
         question,
         category
       }
-      console.log(data);
+      console.log(questionContent);
     }
   }
 
