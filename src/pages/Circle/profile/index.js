@@ -15,7 +15,7 @@ import Popover from './Popover'
 import SecurityIcon from '@mui/icons-material/Security'
 import PersonIcon from '@mui/icons-material/Person'
 import AddBoxIcon from '@mui/icons-material/AddBox'
-
+import GetCurrentUser from '../../../hooks/getCurrentUser'
 const roles = {
   admin: <SecurityIcon />,
   member: <PersonIcon />,
@@ -26,26 +26,29 @@ const EMPTY_BOX =
   'https://firebasestorage.googleapis.com/v0/b/edupox-fa864.appspot.com/o/circle%2Fempty-box.png?alt=media&token=afdf6f8f-6849-4326-88a2-f4bb312e6f9b'
 
 const Profile = () => {
-  const USER_EMAIL = localStorage.getItem('email')
   const { name } = useParams()
+  // const [user, setUser] = useState(null)
   const [profile, setProfile] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
 
+  const user = GetCurrentUser()
   useEffect(() => {
-    getCircle(name)
-      .then(data => {
-        setProfile(data)
-        setLoading(false)
-      })
-      .catch(err => {
-        console.error(err)
-        setError(true)
-        setLoading(false)
-        setProfile({})
-      })
-  }, [name])
+    if (user !== null) {
+      getCircle(name)
+        .then(data => {
+          setProfile(data)
+          setLoading(false)
+        })
+        .catch(err => {
+          console.error(err)
+          setError(true)
+          setLoading(false)
+          setProfile({})
+        })
+    }
+  }, [name, user])
 
   const handleClose = () => {
     setAnchorEl(null)
@@ -53,7 +56,7 @@ const Profile = () => {
 
   const checkMemberValidity = () => {
     if (profile.members) {
-      const member = profile.members.find(member => member.email === USER_EMAIL)
+      const member = profile.members.find(member => member.email === user.email)
       if (member) {
         return true
       }
@@ -124,7 +127,7 @@ const Profile = () => {
                 right: '26%',
               }}
             >
-              {USER_EMAIL === profile.admin ? (
+              {user.email === profile.admin ? (
                 <AuthButton
                   role={'Admin'}
                   setAnchorEl={setAnchorEl}
