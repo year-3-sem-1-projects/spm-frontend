@@ -96,7 +96,7 @@ const index = () => {
                 </Paper>
               </Grid>
               <Grid item zeroMinWidth>
-                <QuestionComponent  question="What is a name?" category="Technology" answers="2 answers"/>
+                <QuestionComponent  data={{question: "What is the difference between a method and a function in OOP?", category: "Technology", answerCount: 7}}/>
               </Grid>
             </Grid>
             <Grid item md={3} zeroMinWidth>

@@ -14,8 +14,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { ListItemIcon, ListItemText } from '@mui/material';
+import EditQuestionDialog from './EditQuestionDialog';
 
-export default function QuestionComponent({question, category, answers}) {
+export default function QuestionComponent({data}) {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -41,8 +42,22 @@ export default function QuestionComponent({question, category, answers}) {
         setIsDeleteOpen(!isDeleteOpen);  
     }
 
+    const handleAnswerCount = () => {
+       
+        if(data.answerCount > 1) {
+            return `${data.answerCount} Answers`;
+        } else if(data.answerCount === 1) {
+            return `${data.answerCount} Answer`;
+        } else {
+            return "Not Yet Answered";
+        }
+    }
+
+    const editData = data
+
   return (
     <>
+        <EditQuestionDialog editData={editData} isEditDialogOpen={isEditOpen} handleCloseEditDialog={handleEdit}/>
      {/* Question component card */}
         <Box>
             <Card>
@@ -92,10 +107,10 @@ export default function QuestionComponent({question, category, answers}) {
                             margin: 1
                         }}
                     >
-                        {question}
+                        {data.question}
                     </Typography>
                     <Chip 
-                        label={category} 
+                        label={data.category} 
                         sx={{
                             margin: 1
                         }}
@@ -103,7 +118,13 @@ export default function QuestionComponent({question, category, answers}) {
                     <CardActions sx={{
                         justifyContent: 'space-between',
                     }}>
-                        <Button text>{answers}</Button>
+                        <Button 
+                            size="small" 
+                            text
+                            sx={{ textTransform: 'none' }}
+                        >
+                            {handleAnswerCount()}
+                        </Button>
                         <Button>
                             <BorderColorIcon className={`mx-2`}/>
                             <span className={`mx-2`}>Answer</span>
