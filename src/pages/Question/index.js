@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import FilterOptions from '../../components/FilterOptions/FilterOptions.jsx'
 import { Container, Paper, Typography } from '@mui/material'
+import QuestionComponent from '../../components/Question/QuestionComponent';
 
 
 const index = () => {
@@ -94,12 +95,8 @@ const index = () => {
                   </Box>
                 </Paper>
               </Grid>
-              <Grid item className={`pb-10`} zeroMinWidth>
-                <Paper className={`p-5 pt-5`}>
-                  <Box className={`flex flex-wrap gap-10 mt-5`}>
-                    <h2>Questions</h2>
-                  </Box>
-                </Paper>
+              <Grid item zeroMinWidth>
+                <QuestionComponent  question="What is a name?" category="Technology" answers="2 answers"/>
               </Grid>
             </Grid>
             <Grid item md={3} zeroMinWidth>
