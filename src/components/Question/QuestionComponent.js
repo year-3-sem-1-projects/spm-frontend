@@ -15,6 +15,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { ListItemIcon, ListItemText } from '@mui/material';
 import EditQuestionDialog from './EditQuestionDialog';
+import DeleteQuestionDialog from './DeleteQuestionDialog';
 
 export default function QuestionComponent({data}) {
 
@@ -38,6 +39,7 @@ export default function QuestionComponent({data}) {
     }
 
     const handleDelete = () => {
+        console.log("handle delete called")
         setAnchorEl(null);
         setIsDeleteOpen(!isDeleteOpen);  
     }
@@ -54,9 +56,11 @@ export default function QuestionComponent({data}) {
     }
 
     const editData = data
+    const deleteData = data
 
   return (
     <>
+        <DeleteQuestionDialog deleteData={deleteData} isDeleteDialogOpen={isDeleteOpen} handleCloseDeleteDialog={setIsDeleteOpen} />  
         <EditQuestionDialog editData={editData} isEditDialogOpen={isEditOpen} handleCloseEditDialog={handleEdit}/>
      {/* Question component card */}
         <Box>
@@ -112,7 +116,9 @@ export default function QuestionComponent({data}) {
                     <Chip 
                         label={data.category} 
                         sx={{
-                            margin: 1
+                            margin: 1,
+                            color: 'primary.light',
+                            fontWeight: 'bold',
                         }}
                     />
                     <CardActions sx={{
