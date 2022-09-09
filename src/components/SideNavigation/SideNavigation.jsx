@@ -5,6 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { Link } from 'react-router-dom';
+import { Typography } from '@mui/material';
 
 export default function IconMenu({menuItems}) {
 
@@ -22,7 +23,7 @@ export default function IconMenu({menuItems}) {
     </Link>
   )
   return (
-    <Paper sx={{ width: 320, maxWidth: '100%' }}>
+    <Paper sx={{ width: 300, maxWidth: '100%' }}>
       <MenuList>
         {displayMenuItems}
       </MenuList>
