@@ -1,0 +1,7 @@
+.Post {
+  position: relative;
+  display: grid;
+  /* grid-template-columns: 18rem auto 20rem; */
+  grid-template-columns: 25rem 75rem 25rem;
+  gap: 1rem;
+}
