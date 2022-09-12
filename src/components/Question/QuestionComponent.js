@@ -19,6 +19,8 @@ import DeleteQuestionDialog from './DeleteQuestionDialog';
 
 export default function QuestionComponent({data}) {
 
+    console.log("dataaaaaa", data)
+
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -55,16 +57,17 @@ export default function QuestionComponent({data}) {
         }
     }
 
-    const editData = data
-    const deleteData = data
-
   return (
     <>
-        <DeleteQuestionDialog deleteData={deleteData} isDeleteDialogOpen={isDeleteOpen} handleCloseDeleteDialog={setIsDeleteOpen} />  
-        <EditQuestionDialog editData={editData} isEditDialogOpen={isEditOpen} handleCloseEditDialog={handleEdit}/>
+        <DeleteQuestionDialog deleteData={data} isDeleteDialogOpen={isDeleteOpen} handleCloseDeleteDialog={setIsDeleteOpen} />  
+        <EditQuestionDialog editData={data} isEditDialogOpen={isEditOpen} handleCloseEditDialog={handleEdit}/>
      {/* Question component card */}
-        <Box>
-            <Card>
+        <Box
+            sx={{
+                marginBottom: 2,
+            }}
+        >
+            <Card elevation={2} >
                 <CardContent>
                     <MoreHorizIcon 
                         sx={{
