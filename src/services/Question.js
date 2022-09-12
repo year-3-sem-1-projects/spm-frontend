@@ -1,9 +1,9 @@
-import axios from '../../lib/axios'
+import axios from '../lib/axios'
 
 //question create function
 export const createQuestion = async (questionContent) => {
     try {
-        return (await axios.post('/api/question/add', questionContent)).data.data
+        return (await axios.post('/api/question/add', questionContent)).data
     } catch (err) {
         console.error(err)
     }
@@ -21,7 +21,7 @@ export const readQuestion = async () => {
 //question update function
 export const updateQuestion = async (questionContent) => {
     try {
-        return (await axios.put('/api/question/edit', questionContent)).data.data
+        return (await axios.put('/api/question/edit', questionContent)).data
     } catch (err) {
         console.error(err)
     }

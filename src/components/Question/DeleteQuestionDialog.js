@@ -6,6 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { deleteQuestion } from '../../services/Question';
 
 export default function DeleteQuestionDialog({ isDeleteDialogOpen, handleCloseDeleteDialog, deleteData }) {
 
@@ -16,8 +17,10 @@ export default function DeleteQuestionDialog({ isDeleteDialogOpen, handleCloseDe
     handleCloseDeleteDialog();
   };
 
-  const handleDelete = () => {
-    console.log('delete');
+  async function handleDelete(deleteData) {
+    const result = await deleteQuestion(deleteData)
+    console.log(result);
+    handleCloseDeleteDialog();
   }
 
   return (
