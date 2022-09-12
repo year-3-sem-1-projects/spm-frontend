@@ -7,8 +7,12 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import categories from '../../constants/categories';
+import GetCurrentUser from '../../hooks/getCurrentUser';
+import { updateQuestion } from "../../services/Question";
 
 export default function EditQuestionDialog({ isEditDialogOpen, handleCloseEditDialog, editData }) {
+
+  const currentUser = GetCurrentUser();
 
   const [fullWidth] = useState(true);
   const [maxWidth] = useState("sm");
@@ -18,7 +22,7 @@ export default function EditQuestionDialog({ isEditDialogOpen, handleCloseEditDi
   const [questionError, setQuestionError] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault(); 
 
     setQuestionError(false);
@@ -33,10 +37,13 @@ export default function EditQuestionDialog({ isEditDialogOpen, handleCloseEditDi
     
     if(question && category) {
       const data = {
-        question,
-        category
+        question: question,
+        category: category,
+        user_email: currentUser.email
       }
-      console.log(data);
+      console.log('edit dataaaaaaaa', data)
+      const result = await updateQuestion(data);
+      console.log(result);
     }
     handleCloseEditDialog()
   }
@@ -61,7 +68,7 @@ export default function EditQuestionDialog({ isEditDialogOpen, handleCloseEditDi
             <TextField
               onChange={(e) => setQuestion(e.target.value)}
               label="Question"
-              value={editData.question}
+              value={question === '' ? editData.question : question}
               placeholder="Type your question here"
               variant="filled"
               fullWidth
