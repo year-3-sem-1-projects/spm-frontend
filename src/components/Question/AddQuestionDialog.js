@@ -7,8 +7,12 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import categories from '../../constants/categories';
+import GetCurrentUser from '../../hooks/getCurrentUser'
+import { createQuestion } from "../../services/Question";
 
 export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog }) {
+
+  const currentUser = GetCurrentUser();
 
   const [fullWidth] = useState(true);
   const [maxWidth] = useState("sm");
@@ -22,7 +26,7 @@ export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog })
     handleCloseDialog(false);
   };
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault(); 
 
     setQuestionError(false);
@@ -36,11 +40,14 @@ export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog })
     }
     
     if(question && category) {
-      const data = {
-        question,
-        category
+      const questionContent = {
+        question: question,
+        category: category,
+        user_email: currentUser.email 
       }
-      console.log(data);
+      const result = await createQuestion(questionContent)
+      console.log(result)
+      handleCloseDialog(false);
     }
   }
 

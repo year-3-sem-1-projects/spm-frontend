@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import AddQuestion from './AddQuestion'
 import SideNavigation from '../../components/SideNavigation/SideNavigation.jsx'
@@ -11,9 +11,30 @@ import Grid from '@mui/material/Grid';
 import FilterOptions from '../../components/FilterOptions/FilterOptions.jsx'
 import { Container, Paper, Typography } from '@mui/material'
 import QuestionComponent from '../../components/Question/QuestionComponent';
+import { readQuestion } from '../../services/Question'
+import Loading from '../../components/Loading/Loading'
 
+const Index = () => {
 
-const index = () => {
+  const [questionData, setQuestionData] = useState([])
+  const [loading, setLoaidng] = useState(true)
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+    readQuestion()
+      .then(res => {
+        setQuestionData(res)
+        setLoaidng(false)
+      })
+      .catch(err => {
+        console.log(err)
+        setError(true)
+        setLoaidng(false)
+        setQuestionData([])
+      })
+  }, [])
+
+  console.log("all questions", questionData)
 
   const items = [
     {
@@ -37,85 +58,95 @@ const index = () => {
       link: 'stats'
     }
   ]
+  if (loading) {
+    return <Loading loading={loading} />
+  } 
+  else if(error) {
+    return <div>Error</div>
+  } 
+  else {
 
-  return (
-    <>
-      <Navbar />
-      <Container>
-          <Grid
-            container
-            columnSpacing={{ xs: 1, sm: 2, md: 4, lg: 6 }}
-            sx={{
-              marginTop: '50px',
-            }}
-          >
-             <Grid item md={3} zeroMinWidth>
-              <Grid
-                item
-                sx={{
-                  marginBottom: '40px',
-                }}
-              >
-                <Paper className={`p-5`}>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    Questions & Answers
-                  </Typography>
-                </Paper>
+    return (
+      <>
+        <Navbar />
+        <Container>
+            <Grid
+              container
+              columnSpacing={{ xs: 1, sm: 2, md: 4, lg: 6 }}
+              sx={{
+                marginTop: '50px',
+              }}
+            >
+               <Grid item md={3} zeroMinWidth>
+                <Grid
+                  item
+                  sx={{
+                    marginBottom: '40px',
+                  }}
+                >
+                  <Paper className={`p-5`}>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      Questions & Answers
+                    </Typography>
+                  </Paper>
+                </Grid>
+                <Grid item className={`pb-10`} zeroMinWidth>
+                  <SideNavigation menuItems={items} />
+                </Grid>
               </Grid>
-              <Grid item className={`pb-10`} zeroMinWidth>
-                <SideNavigation menuItems={items} />
+              <Grid item md={6}>
+                <Grid
+                  item
+                  sx={{
+                    marginBottom: '40px',
+                  }}
+                >
+                  <Paper className={`p-4`}>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      Search
+                    </Typography>
+                    <Box
+                      sx={{
+                        marginTop: '10px',
+                      }}
+                    >
+                    </Box>
+                  </Paper>
+                </Grid>
+                <Grid item zeroMinWidth>
+                  {questionData.map((data) => (
+                    <QuestionComponent data={data} />
+                  ))}
+                </Grid>
+              </Grid>
+              <Grid item md={3} zeroMinWidth>
+                <Grid
+                  item
+                  sx={{
+                    marginBottom: '40px',
+                  }}
+                >
+                  <AddQuestion />
+                </Grid>
+                <Grid item className={`pb-10`} zeroMinWidth>
+                  <FilterOptions />
+                </Grid>
               </Grid>
             </Grid>
-            <Grid item md={6}>
-              <Grid
-                item
-                sx={{
-                  marginBottom: '40px',
-                }}
-              >
-                <Paper className={`p-5`}>
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    Search Bar
-                  </Typography>
-                  <Box
-                    sx={{
-                      marginTop: '10px',
-                    }}
-                  >
-                  </Box>
-                </Paper>
-              </Grid>
-              <Grid item zeroMinWidth>
-                <QuestionComponent  data={{question: "What is the difference between a method and a function in OOP?", category: "Technology", answerCount: 7}}/>
-              </Grid>
-            </Grid>
-            <Grid item md={3} zeroMinWidth>
-              <Grid
-                item
-                sx={{
-                  marginBottom: '40px',
-                }}
-              >
-                <AddQuestion />
-              </Grid>
-              <Grid item className={`pb-10`} zeroMinWidth>
-                <FilterOptions />
-              </Grid>
-            </Grid>
-          </Grid>
-        </Container>
-    </>
-  )
+          </Container>
+      </>
+    )
+  }
 }
 
-export default index
+export default Index

@@ -4,7 +4,7 @@ import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-
+import jwt_decode from 'jwt-decode'
 import { Avatar, Box, IconButton, Tooltip, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
@@ -75,7 +75,12 @@ export default function CustomizedMenus({
     window.location.reload()
     navigate('/')
   }
-
+  const handleProfile = () => {
+    // const id = localStorage.getItem('token')._id
+    // console.log(jwt_decode(localStorage.getItem('token')))
+    console.log("adssed")
+    navigate('/user')
+  }
   return (    
     <Box sx={[{ display: { ms: 'none', md: 'block' } }]}>
       {localStorage.getItem('token') ? 
@@ -126,24 +131,46 @@ export default function CustomizedMenus({
         open={open}
         onClose={handleClose}
       >
-        {settings.map((setting, key) => (
-          // <Link to={`/${setting}`}>
+        {/* {settings.map((setting, key) => ( */}
+          {/* // <Link to={`/${setting}`}> */}
             <MenuItem
               sx={{
                 flexGrow: 1,
                 // padding: '10px 50px',
                 // transform: 'translateX(-20%)',
               }}
-              key={key}
+              // key={key}
               onClick={handleCloseUserMenu}
             >
-              <Typography textAlign="center">
-                {settingList[`/${setting}`]}
+              <Typography textAlign="center" onClick={handleProfile}>
+                {/* {settingList[`/${setting}`]} */}Profile
               </Typography>
-              <Typography onClick={handleLogout} textAlign="center">{setting}</Typography>
+              
+              {/* <Typography onClick={handleLogout} textAlign="center">
+                {/* {setting} */}
+                {/* Logout */}
+                {/* </Typography> */}
             </MenuItem>
-          // </Link>
-        ))}
+            <MenuItem
+              sx={{
+                flexGrow: 1,
+                // padding: '10px 50px',
+                // transform: 'translateX(-20%)',
+              }}
+              // key={key}
+              onClick={handleCloseUserMenu}
+            >
+              <Typography textAlign="center" onClick={handleLogout}>
+                {/* {settingList[`/${setting}`]} */}Logout
+              </Typography>
+              
+              {/* <Typography onClick={handleLogout} textAlign="center">
+                {/* {setting} */}
+                {/* Logout */}
+                {/* </Typography> */}
+            </MenuItem>
+          {/* // </Link> */}
+        {/* // ))} */}
       </StyledMenu> : null}
     </Box>
   )

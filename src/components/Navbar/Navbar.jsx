@@ -60,12 +60,10 @@ const ResponsiveAppBar = () => {
     if (currentUser) {
       const decodedToken = jwt_decode(currentUser)
       setUSER(decodedToken.data)
-      console.log(USER)
     } else {
       setUSER(unregisteredUser)
     }
   }, [currentUser])
-  console.log(USER.username)
   const handleOpenNavMenu = event => {
     setAnchorElNav(event.currentTarget)
   }
@@ -87,7 +85,12 @@ const ResponsiveAppBar = () => {
     window.location.reload()
     navigate('/')
   }
+  // const handleProfile = () => {
+  //   // const id = localStorage.getItem('token')._id
+  //   console.log(jwt_decode(localStorage.getItem('token')))
 
+  //   // navigate('/user')
+  // }
   return (
     <AppBar position="sticky">
       <Container maxWidth="xl">
