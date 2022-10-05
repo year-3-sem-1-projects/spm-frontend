@@ -77,9 +77,12 @@ export default function CustomizedMenus({
   }
 
   return (    
-    <Box sx={[{ display: { ms: 'none', md: 'block' } }]}>
+    <Box sx={[{ display: { ms: 'none', md: 'block' }}]}>
       {localStorage.getItem('token') ? 
       <Button
+        sx={{
+          backgroundImage: 'linear-gradient(45deg, #ec9f05 30%, #ff4e00 90%)',
+        }}
         id="demo-customized-button"
         aria-controls={open ? 'demo-customized-menu' : undefined}
         aria-haspopup="true"
