@@ -19,7 +19,7 @@ import DeleteQuestionDialog from './DeleteQuestionDialog';
 
 export default function QuestionComponent({data}) {
 
-    console.log("dataaaaaa", data)
+    // console.log("dataaaaaa", data)
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);

@@ -11,30 +11,47 @@ import Grid from '@mui/material/Grid';
 import FilterOptions from '../../components/FilterOptions/FilterOptions.jsx'
 import { Container, Paper, Typography } from '@mui/material'
 import QuestionComponent from '../../components/Question/QuestionComponent';
-import { readQuestion } from '../../services/Question'
+import { readAllQuestions, getUserInterests } from '../../services/Question'
 import Loading from '../../components/Loading/Loading'
+import GetCurrentUser from '../../hooks/getCurrentUser';
 
 const Index = () => {
 
+  const currentUser = GetCurrentUser();
   const [questionData, setQuestionData] = useState([])
+  const [userInterestsData, setUserInterestsData] = useState([])
   const [loading, setLoaidng] = useState(true)
   const [error, setError] = useState(false)
+  let recommendedQuestions = []
 
   useEffect(() => {
-    readQuestion()
-      .then(res => {
-        setQuestionData(res)
-        setLoaidng(false)
-      })
-      .catch(err => {
-        console.log(err)
-        setError(true)
-        setLoaidng(false)
-        setQuestionData([])
-      })
-  }, [])
-
-  console.log("all questions", questionData)
+    if(currentUser !== undefined) {
+      readAllQuestions()
+        .then(res => {
+          setQuestionData(res)
+          if(currentUser.email !== undefined) {
+            getUserInterests(currentUser.email)
+              .then(res => {  
+                setUserInterestsData(res)  
+              })
+              .catch(err => {
+                console.log('Error: ', err)
+                setError(true)
+              })
+            }
+            setLoaidng(false)
+        })
+        .catch(err => {
+          setError(true)
+          setLoaidng(false)
+        })
+    }
+  }, [currentUser])
+  if(userInterestsData.interests) {
+    recommendedQuestions = questionData.filter(question => {
+      return userInterestsData.interests.includes(question.category)
+    })
+  }
 
   const items = [
     {
@@ -124,7 +141,7 @@ const Index = () => {
                   </Paper>
                 </Grid>
                 <Grid item zeroMinWidth>
-                  {questionData.map((data) => (
+                  {recommendedQuestions.map((data) => (
                     <QuestionComponent data={data} />
                   ))}
                 </Grid>
