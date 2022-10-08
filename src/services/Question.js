@@ -9,8 +9,8 @@ export const createQuestion = async (questionContent) => {
     }
 }
 
-//question read function
-export const readQuestion = async () => {
+//question read function - all questions
+export const readAllQuestions = async () => {
     try {
         return (await axios.get('/api/question/get/all-questions')).data.data
     } catch (err) {
@@ -35,6 +35,16 @@ export const deleteQuestion = async (questionContent) => {
         console.error(err)
     }
 }
+
+//get user interest function
+export const getUserInterests = async (email) => {
+    try {
+        return (await axios.get(`/api/question/get/user-interests/${email}`)).data.data
+    } catch (err) {
+        console.error(err)
+    }
+}
+
 
 //question read by user id function
 export const readQuestionByUserId = async ({user_email}) => {
