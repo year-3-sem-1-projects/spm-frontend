@@ -39,7 +39,7 @@ const DiscoverCircles = () => {
           setCircleData(res)
           setFollow(
             res.filter(circle => {
-              if (circle.admin === user.email) return true
+              if (circle.admin.email === user.email) return true
               if (circle.members) {
                 const member = circle.members.find(
                   member => member.email === user.email,
@@ -54,8 +54,8 @@ const DiscoverCircles = () => {
           if (filterOptions.includes('ALL')) {
             setFilterData(
               res.filter(circle => {
-                if (circle.admin === user.email)
-                  return circle.admin !== user.email
+                if (circle.admin.email === user.email)
+                  return circle.admin.email !== user.email
                 if (circle.members) {
                   const member = circle.members.find(
                     member => member.email === user.email,
@@ -75,8 +75,8 @@ const DiscoverCircles = () => {
                   return filterOptions.includes(item.category)
                 })
                 .filter(circle => {
-                  if (circle.admin === user.email)
-                    return circle.admin !== user.email
+                  if (circle.admin.email === user.email)
+                    return circle.admin.email !== user.email
                   if (circle.members) {
                     const member = circle.members.find(
                       member => member.email === user.email,
