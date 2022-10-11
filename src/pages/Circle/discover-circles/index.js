@@ -157,7 +157,7 @@ const DiscoverCircles = () => {
                       isDialogOpened={isOpen}
                       handleCloseDialog={() => setIsOpen(false)}
                       data={circleData}
-                      email={user.email}
+                      user={user}
                       setCircleData={setCircleData}
                       setFollow={setFollow}
                     />

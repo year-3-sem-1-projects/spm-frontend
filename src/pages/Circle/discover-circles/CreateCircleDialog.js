@@ -14,7 +14,7 @@ export default function CreateCircleDialog({
   isDialogOpened,
   handleCloseDialog,
   data,
-  email,
+  user,
   setCircleData,
   setFollow,
 }) {
@@ -48,7 +48,7 @@ export default function CreateCircleDialog({
         name: circleName,
         description: circleDescription,
         category,
-        admin: email,
+        admin: user,
       }
       const result = await createCircle(data)
       console.log('result', result)
