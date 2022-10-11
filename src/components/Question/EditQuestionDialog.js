@@ -37,6 +37,7 @@ export default function EditQuestionDialog({ isEditDialogOpen, handleCloseEditDi
     
     if(question && category) {
       const data = {
+        _id: editData._id,
         question: question,
         category: category,
         user_email: currentUser.email
