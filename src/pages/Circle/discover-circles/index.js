@@ -20,6 +20,7 @@ import Loading from '../../../components/Loading/Loading'
 import { Link } from 'react-router-dom'
 import CreateCircleDialog from './CreateCircleDialog'
 import GetCurrentUser from '../../../hooks/getCurrentUser'
+import { DEFAULT_COVER_IMAGE } from '../../../constants/circle'
 
 const DiscoverCircles = () => {
   const [circleData, setCircleData] = useState([])
@@ -38,7 +39,7 @@ const DiscoverCircles = () => {
           setCircleData(res)
           setFollow(
             res.filter(circle => {
-              if (circle.admin === user.email) return true
+              if (circle.admin.email === user.email) return true
               if (circle.members) {
                 const member = circle.members.find(
                   member => member.email === user.email,
@@ -53,8 +54,8 @@ const DiscoverCircles = () => {
           if (filterOptions.includes('ALL')) {
             setFilterData(
               res.filter(circle => {
-                if (circle.admin === user.email)
-                  return circle.admin !== user.email
+                if (circle.admin.email === user.email)
+                  return circle.admin.email !== user.email
                 if (circle.members) {
                   const member = circle.members.find(
                     member => member.email === user.email,
@@ -74,8 +75,8 @@ const DiscoverCircles = () => {
                   return filterOptions.includes(item.category)
                 })
                 .filter(circle => {
-                  if (circle.admin === user.email)
-                    return circle.admin !== user.email
+                  if (circle.admin.email === user.email)
+                    return circle.admin.email !== user.email
                   if (circle.members) {
                     const member = circle.members.find(
                       member => member.email === user.email,
@@ -156,7 +157,7 @@ const DiscoverCircles = () => {
                       isDialogOpened={isOpen}
                       handleCloseDialog={() => setIsOpen(false)}
                       data={circleData}
-                      email={user.email}
+                      user={user}
                       setCircleData={setCircleData}
                       setFollow={setFollow}
                     />
@@ -234,7 +235,7 @@ const DiscoverCircles = () => {
                             key={item.name}
                             name={item.name}
                             iconImage={item.iconImage}
-                            coverImage={item.coverImage}
+                            coverImage={item?.coverImage || DEFAULT_COVER_IMAGE}
                             description={item.description}
                           />
                         )

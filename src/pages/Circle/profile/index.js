@@ -16,14 +16,12 @@ import SecurityIcon from '@mui/icons-material/Security'
 import PersonIcon from '@mui/icons-material/Person'
 import AddBoxIcon from '@mui/icons-material/AddBox'
 import GetCurrentUser from '../../../hooks/getCurrentUser'
+import { DEFAULT_COVER_IMAGE, EMPTY_BOX } from '../../../constants/circle'
 const roles = {
   admin: <SecurityIcon />,
   member: <PersonIcon />,
   follow: <AddBoxIcon />,
 }
-
-const EMPTY_BOX =
-  'https://firebasestorage.googleapis.com/v0/b/edupox-fa864.appspot.com/o/circle%2Fempty-box.png?alt=media&token=afdf6f8f-6849-4326-88a2-f4bb312e6f9b'
 
 const Profile = () => {
   const { name } = useParams()
@@ -127,7 +125,7 @@ const Profile = () => {
                 right: '26%',
               }}
             >
-              {user.email === profile.admin ? (
+              {user.email === profile.admin.email ? (
                 <AuthButton
                   role={'Admin'}
                   setAnchorEl={setAnchorEl}
@@ -270,7 +268,7 @@ function MediaCard({ profile }) {
       <Card sx={{ maxWidth: '100vw' }}>
         <CardMedia
           component="img"
-          image={profile.coverImage}
+          image={profile?.coverImage || DEFAULT_COVER_IMAGE}
           alt="circle cover image"
           className="blur-md"
           sx={{
@@ -286,7 +284,7 @@ function MediaCard({ profile }) {
 
         <CardMedia
           component="img"
-          image={profile.coverImage}
+          image={profile?.coverImage || DEFAULT_COVER_IMAGE}
           alt="circle cover image"
           sx={{
             position: 'absolute',
