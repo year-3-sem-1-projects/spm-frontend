@@ -48,7 +48,11 @@ export default function CreateCircleDialog({
         name: circleName,
         description: circleDescription,
         category,
-        admin: user,
+        admin: {
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+        },
       }
       const result = await createCircle(data)
       console.log('result', result)
