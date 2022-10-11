@@ -92,7 +92,11 @@ const ResponsiveAppBar = () => {
   //   // navigate('/user')
   // }
   return (
-    <AppBar position="sticky">
+    <AppBar position="sticky" 
+      sx={{
+        backgroundColor: '#1d2228',
+      }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box
@@ -174,7 +178,7 @@ const ResponsiveAppBar = () => {
               ))}
             </Box>
             {/* user for big screen*/}
-            <Box sx={[{ display: { xs: 'none', md: 'flex' } }]}>
+            <Box sx={[{ display: { xs: 'none', md: 'flex' } , backgroundColor: '#ff9f055d'}]}>
               <CustomizedMenus
                 USER={USER}
                 settings={settings}
