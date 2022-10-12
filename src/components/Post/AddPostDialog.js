@@ -8,48 +8,52 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import categories from '../../constants/categories'
 import GetCurrentUser from '../../hooks/getCurrentUser'
-import { updateQuestion } from '../../services/Question'
+import { createPost } from '../../services/Post'
 
-export default function EditQuestionDialog({
-  isEditDialogOpen,
-  handleCloseEditDialog,
-  editData,
-}) {
+export default function AddPostDialog({ isDialogOpened, handleCloseDialog }) {
   const currentUser = GetCurrentUser()
 
   const [fullWidth] = useState(true)
   const [maxWidth] = useState('sm')
 
-  const [question, setQuestion] = useState(editData.question)
-  const [category, setCategory] = useState(editData.category)
-  const [questionError, setQuestionError] = useState(false)
+  const [description, setDescription] = useState('')
+  const [category, setCategory] = useState('')
+  const [img, setImg] = useState('')
+  const [postError, setPostError] = useState(false)
   const [categoryError, setCategoryError] = useState(false)
+  const [imgError, setImgError] = useState(false)
+
+  const handleClose = () => {
+    handleCloseDialog(false)
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
 
-    setQuestionError(false)
+    setPostError(false)
     setCategoryError(false)
+    setImgError(false)
 
-    if (question === '') {
-      setQuestionError(true)
+    if (description === '') {
+      setPostError(true)
     }
     if (category === '') {
       setCategoryError(true)
     }
-
-    if (question && category) {
-      const data = {
-        _id: editData._id,
-        question: question,
-        category: category,
-        user_email: currentUser.email,
-      }
-      console.log('edit dataaaaaaaa', data)
-      const result = await updateQuestion(data)
-      console.log(result)
+    if (img === '') {
+      setImgError(true)
     }
-    handleCloseEditDialog()
+
+    if (description && category && img) {
+      const postContent = {
+        description: description,
+        category: category,
+        img: img,
+      }
+      const result = await createPost(postContent)
+      console.log(result)
+      handleCloseDialog(false)
+    }
   }
 
   return (
@@ -57,32 +61,43 @@ export default function EditQuestionDialog({
       <Dialog
         fullWidth={fullWidth}
         maxWidth={maxWidth}
-        open={isEditDialogOpen}
-        onClose={handleCloseEditDialog}
+        open={isDialogOpened}
+        onClose={handleClose}
         aria-labelledby="max-width-dialog-title"
       >
-        <DialogTitle>Add Your Question</DialogTitle>
+        <DialogTitle>Add Your Post</DialogTitle>
         <form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <DialogContent>
             {/* user component */}
             <TextField
-              onChange={e => setQuestion(e.target.value)}
-              label="Question"
-              value={question === '' ? editData.question : question}
-              placeholder="Type your question here"
+              onChange={e => setDescription(e.target.value)}
+              label="Description"
+              helperText="Please enter your description here"
               variant="filled"
               fullWidth
               multiline
               rows={5}
               required
-              error={questionError}
+              error={postError}
+              sx={{ marginTop: 2, marginBottom: 2, display: 'block' }}
+            />
+            <TextField
+              onChange={e => setImg(e.target.value)}
+              label="Image"
+              helperText="Please enter Image url"
+              variant="filled"
+              fullWidth
+              multiline
+              rows={5}
+              required
+              error={imgError}
               sx={{ marginTop: 2, marginBottom: 2, display: 'block' }}
             />
             <TextField
               onChange={e => setCategory(e.target.value)}
               select
               label="Category"
-              value={category === '' ? editData.category : category}
+              value={category}
               helperText="Please select a cateogry"
               fullWidth
               required
@@ -97,11 +112,11 @@ export default function EditQuestionDialog({
             </TextField>
           </DialogContent>
           <DialogActions>
-            <Button variant="text" onClick={handleCloseEditDialog}>
+            <Button variant="text" onClick={handleClose} type="Submit">
               Cancel
             </Button>
             <Button onClick={handleSubmit} variant="contained">
-              Save
+              Add
             </Button>
           </DialogActions>
         </form>
