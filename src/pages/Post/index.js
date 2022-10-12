@@ -14,6 +14,7 @@ import PostComponent from '../../components/Post/PostComponent'
 import { readPost } from '../../services/Post'
 import Loading from '../../components/Loading/Loading'
 import PostPanel from '../../components/PostPanel/PostPanel'
+import SearchPost from './SearchPost'
 
 const Index = () => {
   const [postData, setPostData] = useState([])
@@ -112,6 +113,7 @@ const Index = () => {
                     }}
                   >
                     Search
+                    <SearchPost />
                   </Typography>
                   <Box
                     sx={{
