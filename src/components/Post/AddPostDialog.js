@@ -72,7 +72,7 @@ export default function AddPostDialog({ isDialogOpened, handleCloseDialog }) {
             <TextField
               onChange={e => setDescription(e.target.value)}
               label="Description"
-              placeholder="Type your description here"
+              helperText="Please enter your description here"
               variant="filled"
               fullWidth
               multiline
@@ -84,7 +84,7 @@ export default function AddPostDialog({ isDialogOpened, handleCloseDialog }) {
             <TextField
               onChange={e => setImg(e.target.value)}
               label="Image"
-              placeholder="Enter Image url"
+              helperText="Please enter Image url"
               variant="filled"
               fullWidth
               multiline

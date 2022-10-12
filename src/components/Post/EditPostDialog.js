@@ -75,7 +75,7 @@ export default function EditPostDialog({
               onChange={e => setDescription(e.target.value)}
               label="Post"
               value={description === '' ? editData.description : description}
-              placeholder="Type your post here"
+              helperText="Please enter your post here"
               variant="filled"
               fullWidth
               multiline
@@ -88,7 +88,7 @@ export default function EditPostDialog({
               onChange={e => setImg(e.target.value)}
               label="Image Url"
               value={img === '' ? editData.img : img}
-              placeholder="Type image url here"
+              helperText="Please enter image url here"
               variant="filled"
               fullWidth
               multiline
