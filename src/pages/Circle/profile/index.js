@@ -125,7 +125,7 @@ const Profile = () => {
                 right: '26%',
               }}
             >
-              {user.email === profile.admin ? (
+              {user.email === profile.admin.email ? (
                 <AuthButton
                   role={'Admin'}
                   setAnchorEl={setAnchorEl}

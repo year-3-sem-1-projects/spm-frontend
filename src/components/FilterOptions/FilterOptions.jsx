@@ -8,7 +8,7 @@ import {
 import React from 'react'
 import Categories from '../../constants/categories'
 
-const FilterOptions = ({ handleClick }) => {
+const FilterOptions = ({ handleClick, isDefaultChecked=false }) => {
   return (
     <>
       <Paper className={`p-5`} elevation={3}>
@@ -23,7 +23,7 @@ const FilterOptions = ({ handleClick }) => {
         </Typography>
         <FormGroup>
           <FormControlLabel
-            control={<Checkbox defaultChecked />}
+            control={isDefaultChecked? <Checkbox defaultChecked /> : <Checkbox />}
             label="All Categories"
             onChange={e => handleClick(`ALL`, e.target.checked)}
             sx={{
