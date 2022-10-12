@@ -216,7 +216,7 @@ export default function PostComponent({ data }) {
           fontWeight="lg"
           textColor="text.primary"
         >
-          8.1M Likes
+          0 Likes
         </Link>
         {/* <Typography fontSize="sm">
           <Link
