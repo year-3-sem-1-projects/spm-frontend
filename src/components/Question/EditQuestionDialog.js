@@ -1,50 +1,53 @@
-import React, { useState } from "react";
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import categories from '../../constants/categories';
-import GetCurrentUser from '../../hooks/getCurrentUser';
-import { updateQuestion } from "../../services/Question";
+import React, { useState } from 'react'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import MenuItem from '@mui/material/MenuItem'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import categories from '../../constants/categories'
+import GetCurrentUser from '../../hooks/getCurrentUser'
+import { updateQuestion } from '../../services/Question'
 
-export default function EditQuestionDialog({ isEditDialogOpen, handleCloseEditDialog, editData }) {
+export default function EditQuestionDialog({
+  isEditDialogOpen,
+  handleCloseEditDialog,
+  editData,
+}) {
+  const currentUser = GetCurrentUser()
 
-  const currentUser = GetCurrentUser();
+  const [fullWidth] = useState(true)
+  const [maxWidth] = useState('sm')
 
-  const [fullWidth] = useState(true);
-  const [maxWidth] = useState("sm");
-
-  const [question, setQuestion] = useState(editData.question);
-  const [category, setCategory] = useState(editData.category);
-  const [questionError, setQuestionError] = useState(false);
-  const [categoryError, setCategoryError] = useState(false);
+  const [question, setQuestion] = useState(editData.question)
+  const [category, setCategory] = useState(editData.category)
+  const [questionError, setQuestionError] = useState(false)
+  const [categoryError, setCategoryError] = useState(false)
 
   async function handleSubmit(e) {
-    e.preventDefault(); 
+    e.preventDefault()
 
-    setQuestionError(false);
-    setCategoryError(false);
+    setQuestionError(false)
+    setCategoryError(false)
 
-    if(question === '') {
-      setQuestionError(true);
+    if (question === '') {
+      setQuestionError(true)
     }
-    if(category === '') {
-      setCategoryError(true);
+    if (category === '') {
+      setCategoryError(true)
     }
-    
-    if(question && category) {
+
+    if (question && category) {
       const data = {
         _id: editData._id,
         question: question,
         category: category,
-        user_email: currentUser.email
+        user_email: currentUser.email,
       }
       console.log('edit dataaaaaaaa', data)
-      const result = await updateQuestion(data);
-      console.log(result);
+      const result = await updateQuestion(data)
+      console.log(result)
     }
     handleCloseEditDialog()
   }
@@ -59,15 +62,11 @@ export default function EditQuestionDialog({ isEditDialogOpen, handleCloseEditDi
         aria-labelledby="max-width-dialog-title"
       >
         <DialogTitle>Add Your Question</DialogTitle>
-        <form 
-          noValidate 
-          autoComplete="off"
-          onSubmit={handleSubmit} 
-        >
+        <form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <DialogContent>
             {/* user component */}
             <TextField
-              onChange={(e) => setQuestion(e.target.value)}
+              onChange={e => setQuestion(e.target.value)}
               label="Question"
               value={question === '' ? editData.question : question}
               placeholder="Type your question here"
@@ -77,10 +76,10 @@ export default function EditQuestionDialog({ isEditDialogOpen, handleCloseEditDi
               rows={5}
               required
               error={questionError}
-              sx={{marginTop: 2, marginBottom: 2, display: 'block'}}
+              sx={{ marginTop: 2, marginBottom: 2, display: 'block' }}
             />
             <TextField
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={e => setCategory(e.target.value)}
               select
               label="Category"
               value={category === '' ? editData.category : category}
@@ -88,9 +87,9 @@ export default function EditQuestionDialog({ isEditDialogOpen, handleCloseEditDi
               fullWidth
               required
               error={categoryError}
-              sx={{marginTop: 2, marginBottom: 2, display: 'block'}}
+              sx={{ marginTop: 2, marginBottom: 2, display: 'block' }}
             >
-              {categories.map((option) => (
+              {categories.map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
@@ -98,13 +97,15 @@ export default function EditQuestionDialog({ isEditDialogOpen, handleCloseEditDi
             </TextField>
           </DialogContent>
           <DialogActions>
-            <Button variant="text"  onClick={handleCloseEditDialog}>Cancel</Button>
-            <Button onClick={handleSubmit} variant="contained">Save</Button>
+            <Button variant="text" onClick={handleCloseEditDialog}>
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} variant="contained">
+              Save
+            </Button>
           </DialogActions>
         </form>
       </Dialog>
     </React.Fragment>
-  );
+  )
 }
-
-
