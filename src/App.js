@@ -7,6 +7,7 @@ import Login from './pages/Auth/Login'
 import Register from './pages/Auth/Register'
 import Verify from './pages/Auth/Verify'
 import UserProfile from './pages/User/UserProfile'
+import Interest from './pages/Auth/Interest'
 const App = () => {
   const currentUser = localStorage.getItem('token')
   return (
@@ -27,6 +28,8 @@ const App = () => {
         path="/user"
         element={currentUser == null ? <Login /> : <UserProfile />}
       />
+      <Route path="/interest" element={<Interest />} />
+      {/* element={currentUser==null ? <Login /> :} */}
     </Routes>
   )
 }

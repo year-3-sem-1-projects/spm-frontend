@@ -24,7 +24,6 @@ import { useEffect, useState } from 'react'
 import jwt_decode from 'jwt-decode'
 import { useNavigate } from 'react-router-dom'
 
-
 const ICON_SIZE = 'medium'
 const pages = ['', 'Question/recommended', 'Circle']
 const pageList = {
@@ -46,11 +45,9 @@ const unregisteredUser = {
   image: 'https://i.redd.it/8lczu2vop1911.jpg',
 }
 
-
 const ResponsiveAppBar = () => {
-
   const navigate = useNavigate()
-  
+
   const currentUser = localStorage.getItem('token')
   const [USER, setUSER] = useState(unregisteredUser)
   const [anchorElNav, setAnchorElNav] = React.useState(null)
@@ -80,7 +77,6 @@ const ResponsiveAppBar = () => {
   }
 
   const handleLogout = () => {
-    
     localStorage.removeItem('token')
     window.location.reload()
     navigate('/')
@@ -92,7 +88,8 @@ const ResponsiveAppBar = () => {
   //   // navigate('/user')
   // }
   return (
-    <AppBar position="sticky" 
+    <AppBar
+      position="sticky"
       sx={{
         backgroundColor: '#1d2228',
       }}
@@ -170,15 +167,41 @@ const ResponsiveAppBar = () => {
                     },
                   ]}
                 >
-                  
                   <Link style={{ width: '100%' }} to={`/${page}`}>
                     {pageList[`/${page}`]}
                   </Link>
                 </Button>
               ))}
             </Box>
+            {localStorage.getItem('token') ? null : (
+              <Button
+                key="/login"
+                onClick={handleCloseNavMenu}
+                sx={[
+                  {
+                    display: { xs: 'none', md: 'flex' },
+                  backgroundColor: '#ff9f05',
+                    my: 2,
+                    color: 'white',
+                    // display: 'block',
+                    marginLeft: '60px',
+                  },
+                ]}
+              >
+                <Link style={{ width: '100%' }} to={`/login`}>
+                  <Typography>Login</Typography>
+                </Link>
+              </Button>
+            )}
             {/* user for big screen*/}
-            <Box sx={[{ display: { xs: 'none', md: 'flex' } , backgroundColor: '#ff9f055d'}]}>
+            <Box
+              sx={[
+                {
+                  display: { xs: 'none', md: 'flex' },
+                  backgroundColor: '#ff9f055d',
+                },
+              ]}
+            >
               <CustomizedMenus
                 USER={USER}
                 settings={settings}
@@ -267,8 +290,10 @@ const ResponsiveAppBar = () => {
                 <IconButton
                   onClick={handleOpenUserMenu}
                   sx={{ p: 0, marginRight: '20px' }}
-                >{localStorage.getItem('token') ? 
-                  <Avatar alt={USER.username} src={USER.image} /> : null}
+                >
+                  {localStorage.getItem('token') ? (
+                    <Avatar alt={USER.username} src={USER.image} />
+                  ) : null}
                 </IconButton>
               </Tooltip>
               <Menu
@@ -291,18 +316,20 @@ const ResponsiveAppBar = () => {
               >
                 {settings.map(setting => (
                   // <Link to={`/${setting}`}>
-                    <MenuItem
-                      sx={{
-                        padding: '10px 10px 10px 10px',
-                      }}
-                      key={setting}
-                      onClick={handleCloseUserMenu}
-                    >
-                      <Typography textAlign="center">
-                        {settingList[`/${setting}`]}
-                      </Typography>
-                      <Typography onClick={handleLogout} textAlign="center">{setting}</Typography>
-                    </MenuItem>
+                  <MenuItem
+                    sx={{
+                      padding: '10px 10px 10px 10px',
+                    }}
+                    key={setting}
+                    onClick={handleCloseUserMenu}
+                  >
+                    <Typography textAlign="center">
+                      {settingList[`/${setting}`]}
+                    </Typography>
+                    <Typography onClick={handleLogout} textAlign="center">
+                      {setting}
+                    </Typography>
+                  </MenuItem>
                   // </Link>
                 ))}
               </Menu>
