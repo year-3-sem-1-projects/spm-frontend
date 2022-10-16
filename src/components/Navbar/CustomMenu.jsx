@@ -4,7 +4,7 @@ import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import jwt_decode from 'jwt-decode'
+// import jwt_decode from 'jwt-decode'
 import { Avatar, Box, IconButton, Tooltip, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
@@ -103,7 +103,7 @@ export default function CustomizedMenus({
           >
             {localStorage.getItem('token') ? 
             <IconButton sx={{ p: 0, marginRight: '20px' }} disableRipple>
-               <Avatar alt={USER.username} src={USER.image} /> 
+               <Avatar alt={USER.username} src={USER.photo_url} /> 
             </IconButton> : null}
             {localStorage.getItem('token') ? 
             <Typography
@@ -120,7 +120,9 @@ export default function CustomizedMenus({
               }}
             >
               {USER.username}
-            </Typography> : null}
+            </Typography> : 
+            null
+            }
           </Box>
         </Tooltip>
       </Button> : null}

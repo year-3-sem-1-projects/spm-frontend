@@ -15,8 +15,8 @@ const Login = () => {
         localStorage.setItem('token', res.data.data.access_token)
         navigate('/')
       })
-      .catch((e) => {
-        alert(e.response.statusText)
+      .catch((err) => {
+        alert(err.response.statusText)
       })
   }
   return (
