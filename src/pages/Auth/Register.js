@@ -21,7 +21,7 @@ const Login = () => {
           }).toString()
         })
       })
-      .catch(e => console.error(e))
+      .catch(err => console.error(err))
   }
   return (
     <div className="flex justify-center items-center ">
