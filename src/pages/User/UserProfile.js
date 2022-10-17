@@ -3,13 +3,12 @@ import Navbar from '../../components/Navbar/Navbar'
 import PostPanel from '../../components/PostPanel/PostPanel'
 import ProgressPanel from '../../components/ProgressPanel/ProgressPanel'
 import Avatar from '@mui/material/Avatar'
-import jwt_decode from 'jwt-decode'
 import PostComponent from '../../components/Post/PostComponent'
 import { readPost } from '../../services/Post'
-import Grid from '@mui/material/Grid'
+import GetCurrentUser from '../../hooks/getCurrentUser'
 
 const UserProfile = () => {
-  const decodedToken = jwt_decode(localStorage.getItem('token')).data
+  const user = GetCurrentUser();
   const [postData, setPostData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -33,9 +32,9 @@ const UserProfile = () => {
       <Navbar />
       <div className="flex flex-col px-28">
         <div className=" relative flex">
-          {decodedToken.cover_photo_url ? (
+          {user.cover_photo_url ? (
             <img
-              src={decodedToken.cover_photo_url}
+              src={user.cover_photo_url}
               alt="Cover"
               className="h-[20rem] w-[85rem]"
             />
@@ -49,10 +48,10 @@ const UserProfile = () => {
             </div>
           )}
           <div className="absolute h-24 w-24 bg-blue-400 -bottom-5 left-8">
-            {decodedToken.photo_url ? (
+            {user.photo_url ? (
               <Avatar
                 alt="Profile Picture"
-                src={decodedToken.photo_url}
+                src={user.photo_url}
                 sx={{ width: 100, height: 100 }}
                 variant="square"
               />
@@ -68,7 +67,7 @@ const UserProfile = () => {
         </div>
         <div className="h-7 w-full mt-10 flex justify-between">
           <span className="text-2xl font-inter font-bold">
-            @{decodedToken.username}
+            @{user.username}
           </span>
           <button className="bg-[#1976D2] text-white p-2 flex text-center items-center rounded-sm">
             Edit Profile
