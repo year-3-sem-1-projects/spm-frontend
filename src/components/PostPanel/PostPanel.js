@@ -2,9 +2,11 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import CreateIcon from '@mui/icons-material/Create'
 import RateReviewTwoToneIcon from '@mui/icons-material/RateReviewTwoTone'
 import Card from '@mui/joy/Card'
-import { Button } from '@mui/joy'
+import GetCurrentUser from '../../hooks/getCurrentUser'
 
 const PostPanel = () => {
+  const user = GetCurrentUser();
+  console.log('user', user)
   return (
     <>
       <Card
@@ -16,13 +18,21 @@ const PostPanel = () => {
           backgroundColor: '#FFFFFF',
         }}
       >
+        
         <div className="w-full h-full">
           <div className="flex justify-evenly items-center p-5">
+            {user ? 
+            <img
+              src={user.photo_url}
+              alt="Profile"
+              className="rounded-full h-10 w-10"
+            /> : 
             <img
               src="https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png"
               alt=""
               className="rounded-full h-10 w-10"
             />
+            }
 
             <input
               className="w-[30rem] h-7 bg-white-400 rounded-md outline-fill p-4"

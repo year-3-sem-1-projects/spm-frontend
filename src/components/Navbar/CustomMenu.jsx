@@ -4,7 +4,7 @@ import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import jwt_decode from 'jwt-decode'
+import GetCurrentUser from '../../hooks/getCurrentUser'
 import { Avatar, Box, IconButton, Tooltip, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
@@ -76,14 +76,13 @@ export default function CustomizedMenus({
     navigate('/')
   }
   const handleProfile = () => {
-    // const id = localStorage.getItem('token')._id
-    // console.log(jwt_decode(localStorage.getItem('token')))
-    console.log("adssed")
     navigate('/user')
   }
+  const user = GetCurrentUser();
+
   return (    
     <Box sx={[{ display: { ms: 'none', md: 'block' }}]}>
-      {localStorage.getItem('token') ? 
+      {user ? 
       <Button
         sx={{
           backgroundImage: 'linear-gradient(45deg, #ec9f05 30%, #ff4e00 90%)',
@@ -101,11 +100,11 @@ export default function CustomizedMenus({
           <Box
             sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}
           >
-            {localStorage.getItem('token') ? 
+            {user ? 
             <IconButton sx={{ p: 0, marginRight: '20px' }} disableRipple>
-               <Avatar alt={USER.username} src={USER.image} /> 
+               <Avatar alt={USER.username} src={USER.photo_url} /> 
             </IconButton> : null}
-            {localStorage.getItem('token') ? 
+            {user ? 
             <Typography
               variant="h7"
               noWrap
@@ -120,11 +119,13 @@ export default function CustomizedMenus({
               }}
             >
               {USER.username}
-            </Typography> : null}
+            </Typography> : 
+            null
+            }
           </Box>
         </Tooltip>
       </Button> : null}
-      {localStorage.getItem('token') ? 
+      {user ? 
       <StyledMenu
         id="demo-customized-menu"
         MenuListProps={{
