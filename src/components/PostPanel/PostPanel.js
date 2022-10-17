@@ -2,10 +2,11 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import CreateIcon from '@mui/icons-material/Create'
 import RateReviewTwoToneIcon from '@mui/icons-material/RateReviewTwoTone'
 import Card from '@mui/joy/Card'
-import jwt_decode from 'jwt-decode'
+import GetCurrentUser from '../../hooks/getCurrentUser'
 
 const PostPanel = () => {
-  const decodedToken = jwt_decode(localStorage.getItem('token')).data
+  const user = GetCurrentUser();
+  console.log('user', user)
   return (
     <>
       <Card
@@ -17,11 +18,12 @@ const PostPanel = () => {
           backgroundColor: '#FFFFFF',
         }}
       >
+        
         <div className="w-full h-full">
           <div className="flex justify-evenly items-center p-5">
-            {decodedToken.photo_url ? 
+            {user ? 
             <img
-              src={decodedToken.photo_url}
+              src={user.photo_url}
               alt="Profile"
               className="rounded-full h-10 w-10"
             /> : 
