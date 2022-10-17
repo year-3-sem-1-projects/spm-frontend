@@ -21,7 +21,7 @@ const PostPanel = () => {
         
         <div className="w-full h-full">
           <div className="flex justify-evenly items-center p-5">
-            {user.photo_url ? 
+            {user ? 
             <img
               src={user.photo_url}
               alt="Profile"

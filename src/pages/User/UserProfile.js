@@ -6,9 +6,11 @@ import Avatar from '@mui/material/Avatar'
 import PostComponent from '../../components/Post/PostComponent'
 import { readPost } from '../../services/Post'
 import GetCurrentUser from '../../hooks/getCurrentUser'
+import jwt_decode from 'jwt-decode'
 
 const UserProfile = () => {
-  const user = GetCurrentUser();
+  const user = jwt_decode(localStorage.getItem('token')).data;
+  // GetCurrentUser();
   const [postData, setPostData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
