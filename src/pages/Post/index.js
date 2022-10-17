@@ -14,9 +14,13 @@ import PostComponent from '../../components/Post/PostComponent'
 import { readPost } from '../../services/Post'
 import Loading from '../../components/Loading/Loading'
 import PostPanel from '../../components/PostPanel/PostPanel'
+import GetCurrentUser from '../../hooks/getCurrentUser'
 // import SearchPost from './SearchPost'
 
+
+
 const Index = () => {
+  const user = GetCurrentUser();
   const [postData, setPostData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -104,7 +108,8 @@ const Index = () => {
                   marginBottom: '40px',
                 }}
               >
-                <PostPanel />
+                {user ? 
+                <PostPanel /> : null}
                 <Paper className={`p-4`}>
                   <Typography
                     variant="h6"
