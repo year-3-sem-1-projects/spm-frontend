@@ -20,38 +20,68 @@ const Index = () => {
   const currentUser = GetCurrentUser();
   const [questionData, setQuestionData] = useState([])
   const [userInterestsData, setUserInterestsData] = useState([])
-  const [loading, setLoaidng] = useState(true)
+  const [filterData, setFilterData] = useState([])
+  const [filterOptions, setFilterOptions] = useState(['NONE'])
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
-  let recommendedQuestions = []
+
 
   useEffect(() => {
+    console.log('currentUser', currentUser)
     if(currentUser !== undefined) {
       readAllQuestions()
         .then(res => {
+          console.log('Read all questions called: ', res)
           setQuestionData(res)
-          if(currentUser.email !== undefined) {
-            getUserInterests(currentUser.email)
-              .then(res => {  
-                setUserInterestsData(res)  
-              })
-              .catch(err => {
-                console.log('Error: ', err)
-                setError(true)
-              })
-            }
-            setLoaidng(false)
+          setLoading(false)
+          console.log('Question data set: ', questionData)
         })
         .catch(err => {
+          console.log('Error in reading all questions: ', err)
           setError(true)
-          setLoaidng(false)
+          setLoading(false)
         })
     }
+    // if(currentUser !== undefined) {
+    //   readAllQuestions()
+    //     .then(res => {
+    //       setQuestionData(res)
+    //       if(currentUser.email !== undefined && questionData.length !== 0) {
+    //         getUserInterests(currentUser.email)
+    //           .then(res => {  
+    //             setUserInterestsData(res) 
+    //             if(userInterestsData.length !== 0) {
+    //             console.log('userInterestsData', userInterestsData)
+    //             console.log('questionData', questionData)
+    //             }
+
+    //             // if(filterOptions.includes('NONE')) {
+    //             //   setFilterData(
+    //             //     questionData.filter(question => {
+    //             //       console.log('question in filter', question)
+    //             //       return userInterestsData.interests.includes(question.category)
+    //             //     })
+    //             //   )
+    //             // }       
+    //           })
+    //           .catch(err => {
+    //             console.log('Error in getting user interests', err)
+    //             setError(true)
+    //           })
+    //       }
+    //       setLoaidng(false)
+    //     })
+    //     .catch(err => {
+    //       setError(true)
+    //       setLoaidng(false)
+    //     })
+    // }
   }, [currentUser])
-  if(userInterestsData.interests) {
-    recommendedQuestions = questionData.filter(question => {
-      return userInterestsData.interests.includes(question.category)
-    })
-  }
+  // if(userInterestsData.interests) {
+  //   recommendedQuestions = questionData.filter(question => {
+  //     return userInterestsData.interests.includes(question.category)
+  //   })
+  // }
 
   const items = [
     {
@@ -141,7 +171,7 @@ const Index = () => {
                   </Paper>
                 </Grid>
                 <Grid item zeroMinWidth>
-                  {recommendedQuestions.map((data) => (
+                  {questionData.map((data) => (
                     <QuestionComponent data={data} />
                   ))}
                 </Grid>
