@@ -5,60 +5,92 @@ import People from './people'
 import Stats from './stats'
 import Leave from './leave'
 import SideNavigation from '../../../components/SideNavigation/SideNavigation.jsx'
+import SecurityIcon from '@mui/icons-material/Security'
+import { Box, Button, Paper, Typography, Grid, Container } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
 import GroupsIcon from '@mui/icons-material/Groups'
 import DonutSmallIcon from '@mui/icons-material/DonutSmall'
 import LogoutIcon from '@mui/icons-material/Logout'
-import SecurityIcon from '@mui/icons-material/Security'
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Paper,
-  TextField,
-  Typography,
-} from '@mui/material'
 
 const Dashboard = () => {
   const { role, name } = useParams()
-  const BASE_PATH = `/circle/${name}/${role}/dashboard`
-
   const items = [
     {
       name: 'Settings',
       icon: <SettingsIcon />,
-      link: `${BASE_PATH}/settings`,
+      link: `settings`,
     },
     {
       name: 'People',
       icon: <GroupsIcon />,
-      link: `${BASE_PATH}/people`,
+      link: `people`,
     },
     {
       name: 'Stats',
       icon: <DonutSmallIcon />,
-      link: `${BASE_PATH}/stats`,
+      link: `stats`,
     },
     {
       name: 'Leave Circle',
       icon: <LogoutIcon />,
-      link: `${BASE_PATH}/leave`,
+      link: `leave`,
     },
   ]
 
-  // if (role === 'admin') {
   return (
     <>
       <Box>
         <TopBar name={name} role={role} />
       </Box>
-      <Routes>
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/people" element={<People />} />
-        <Route path="/stats" element={<Stats />} />
-        <Route path="/leave" element={<Leave />} />
-      </Routes>
+      <Container>
+        <Grid
+          container
+          columnSpacing={{ xs: 1, sm: 2, md: 4, lg: 6 }}
+          sx={{
+            marginTop: '50px',
+          }}
+        >
+          <Grid item md={3} zeroMinWidth>
+            <Grid
+              item
+              sx={{
+                marginBottom: '40px',
+              }}
+            >
+              <Paper className={`p-5`}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {`${
+                    role.substring(0, 1).toUpperCase() + role.substring(1)
+                  } Dashboard`}
+                </Typography>
+              </Paper>
+            </Grid>
+            <Grid item className={`pb-10`} zeroMinWidth>
+              <SideNavigation menuItems={items} />
+            </Grid>
+          </Grid>
+          <Grid item md={6}>
+            <Grid
+              item
+              sx={{
+                marginBottom: '40px',
+              }}
+            >
+              <Routes>
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/people" element={<People />} />
+                <Route path="/stats" element={<Stats />} />
+                <Route path="/leave" element={<Leave />} />
+              </Routes>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Container>
     </>
   )
 }
@@ -108,50 +140,5 @@ const TopBar = ({ name, role }) => {
     </Paper>
   )
 }
-
-// <Container>
-//   <Grid
-//     container
-//     columnSpacing={{ xs: 1, sm: 2, md: 4, lg: 6 }}
-//     sx={{
-//       marginTop: '50px',
-//     }}
-//   >
-//     <Grid item md={3} zeroMinWidth>
-//       <Grid
-//         item
-//         sx={{
-//           marginBottom: '40px',
-//         }}
-//       >
-//         <Paper className={`p-5`}>
-//           <Typography
-//             variant="h6"
-//             sx={{
-//               fontWeight: 'bold',
-//             }}
-//           >
-//             {`${
-//               role.substring(0, 1).toUpperCase() + role.substring(1)
-//             } Dashboard`}
-//           </Typography>
-//         </Paper>
-//       </Grid>
-//       <Grid item className={`pb-10`} zeroMinWidth>
-//         <SideNavigation items={items} />
-//       </Grid>
-//     </Grid>
-//     <Grid item md={6}>
-//       <Grid
-//         item
-//         sx={{
-//           marginBottom: '40px',
-//         }}
-//       >
-//         Settings
-//       </Grid>
-//     </Grid>
-//   </Grid>
-// </Container>
 
 export default Dashboard
