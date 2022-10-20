@@ -3,7 +3,7 @@ import Navbar from '../../components/Navbar/Navbar'
 import { Route, Routes } from 'react-router-dom'
 import DiscoverCircles from './discover-circles'
 import Profile from './profile'
-import Form from './discover-circles/Form'
+import Dashboard from './dashboard'
 
 const Circle = () => {
   return (
@@ -12,7 +12,7 @@ const Circle = () => {
       <Routes>
         <Route path="/" element={<DiscoverCircles />} />
         <Route path="/:name" element={<Profile />} />
-        <Route path="/form" element={<Form />} />
+        <Route path="/:name/:role/dashboard/*" element={<Dashboard />} />
       </Routes>
     </>
   )
