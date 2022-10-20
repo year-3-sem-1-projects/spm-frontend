@@ -11,6 +11,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import GroupsIcon from '@mui/icons-material/Groups'
 import DonutSmallIcon from '@mui/icons-material/DonutSmall'
 import LogoutIcon from '@mui/icons-material/Logout'
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 
 const Dashboard = () => {
   const { role, name } = useParams()
@@ -58,9 +59,46 @@ const Dashboard = () => {
               }}
             >
               <Paper className={`p-5`}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <ArrowBackIosIcon
+                    sx={{ cursor: 'pointer' }}
+                    onClick={() => window.history.back()}
+                  />
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      // marginBottom: '10px',
+                      fontSize: '14px',
+                    }}
+                  >
+                    Back to Circle page
+                  </Typography>
+                </Box>
+                {/* <Button
+                  variant="outlined"
+                  color="primary"
+                  href={`/circle/${name}`}
+                  sx={{
+                    width: '100%',
+                    textTransform: 'none',
+                    borderRadius: '20px',
+                    boxShadow: '0px 0px 10px rgba(0,0,0,0.5)',
+                    '&:hover': {
+                      boxShadow: '0px 0px 10px rgba(0,0,0,0.5)',
+                    },
+                  }}
+                >
+                  Go Back
+                </Button> */}
                 <Typography
                   variant="h6"
                   sx={{
+                    marginTop: '20px',
                     fontWeight: 'bold',
                   }}
                 >
