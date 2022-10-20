@@ -26,7 +26,7 @@ export const createCircle = async data => {
 
 export const updateCircle = async data => {
   try {
-    return (await axios.put(`/api/circle/update`, data)).data
+    return await axios.put(`/api/circle/update`, data)
   } catch (err) {
     console.error(err)
   }
