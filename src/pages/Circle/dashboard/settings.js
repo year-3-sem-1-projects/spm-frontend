@@ -1,16 +1,31 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Router, useParams } from 'react-router-dom'
 import GetCurrentUser from '../../../hooks/getCurrentUser.js'
 import {
+  deleteCircle,
   getAllCircles,
   getCircle,
   updateCircle,
 } from '../../../services/Circle.js'
 import { useEffect } from 'react'
-import { Box, Button, Paper, TextField, Grid, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Paper,
+  TextField,
+  Grid,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+} from '@mui/material'
 import CreateIcon from '@mui/icons-material/Create'
 import Loading from '../../../components/Loading/Loading'
 import imageUpload from '../../../utils/imageUpload.js'
+import jwt_decode from 'jwt-decode'
+import CloseIcon from '@mui/icons-material/Close'
 
 const Settings = () => {
   const { role, name } = useParams()
@@ -26,7 +41,7 @@ const Settings = () => {
   const [circleNameExistsError, setCircleNameExistsError] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
-  const user = GetCurrentUser()
+  const user = jwt_decode(localStorage.getItem('token')).data
 
   useEffect(() => {
     getAllCircles()
@@ -138,7 +153,7 @@ const Settings = () => {
             marginTop: '30px',
           }}
         >
-          <DeleteCircle />
+          <DeleteCircle circleData={circleData} user={user} />
         </Box>
       </>
     )
@@ -305,42 +320,33 @@ const CircleImages = ({
       console.log('imgUrl:::::: ', imgUrl)
       if (icon) {
         try {
-          setCircleData(prevData => {
-            prevData.iconImage = imgUrl
-            return {
-              ...prevData,
-              user,
-            }
-          })
           console.log('after icon image setup:::::: ', circleData)
-          try {
-            const result = await updateCircle(circleData)
-            console.log('after uploading icon:::::: result', result)
-            setCircleImage(imgUrl)
-          } catch {
-            console.log('Update Image failed!')
-          }
+          const result = await updateCircle({
+            iconImage: imgUrl,
+            user,
+            id: circleData.id,
+            name: circleData.name,
+            admin: circleData.admin,
+          })
+          console.log('after uploading icon:::::: result', result)
+          setCircleImage(imgUrl)
         } catch {
-          console.log('Set Image failed!')
+          console.log('Update Image failed!')
         }
         return
       }
       try {
-        setCircleData(prevData => {
-          prevData.coverImage = imgUrl
-          return {
-            ...prevData,
-            user,
-          }
+        await updateCircle({
+          coverImage: imgUrl,
+          user,
+          id: circleData.id,
+          name: circleData.name,
+          admin: circleData.admin,
         })
-        try {
-          await updateCircle(circleData)
-          setCircleCoverImage(imgUrl)
-        } catch {
-          console.log('Update Image failed!')
-        }
-      } catch (error) {}
-      setCircleCoverImage(imgUrl)
+        setCircleCoverImage(imgUrl)
+      } catch {
+        console.log('Update Image failed!')
+      }
     } catch (error) {
       alert.error('Error uploading image')
     }
@@ -501,7 +507,12 @@ const CircleImages = ({
   )
 }
 
-const DeleteCircle = () => {
+const DeleteCircle = ({ circleData, user }) => {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleOpen = () => {
+    setIsOpen(!isOpen)
+  }
   return (
     <>
       <Paper className={`p-5`}>
@@ -516,6 +527,7 @@ const DeleteCircle = () => {
         <Box
           sx={{
             marginTop: '5px',
+            padding: '10px',
           }}
         >
           <Typography
@@ -529,16 +541,164 @@ const DeleteCircle = () => {
           </Typography>
           <Box
             sx={{
-              marginTop: '30px',
+              marginTop: '40px',
+
+              position: 'relative',
             }}
           >
-            <Button variant="contained" color="error">
+            <Button
+              sx={{
+                position: 'absolute',
+                right: '0',
+                bottom: '0',
+              }}
+              variant="contained"
+              color="error"
+              onClick={handleOpen}
+            >
               Delete Circle
             </Button>
+            <DeleteCircleDialog
+              isDialogOpened={isOpen}
+              handleCloseDialog={() => setIsOpen(false)}
+              circleData={circleData}
+              user={user}
+            />
           </Box>
         </Box>
       </Paper>
     </>
+  )
+}
+
+function DeleteCircleDialog({
+  isDialogOpened,
+  handleCloseDialog,
+  circleData,
+  user,
+}) {
+  const [fullWidth] = useState(true)
+  const [maxWidth] = useState('sm')
+  const [isDeleting, setIsDeleting] = useState(false)
+  const handleClose = () => {
+    handleCloseDialog(false)
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    if (!isDeleting) {
+      console.log('Deleting Circle')
+      return
+    }
+    try {
+      await deleteCircle({
+        name: circleData.name,
+        admin: circleData.admin,
+        user,
+      })
+      window.location.replace(`/circle`)
+    } catch {
+      setIsDeleting(false)
+    }
+  }
+
+  const handleOnChangeInput = value => {
+    if (value === circleData.name) {
+      setIsDeleting(true)
+    } else {
+      setIsDeleting(false)
+    }
+  }
+
+  return (
+    <React.Fragment>
+      <Dialog
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+        open={isDialogOpened}
+        onClose={handleClose}
+        aria-labelledby="max-width-dialog-title"
+      >
+        <DialogTitle>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <Typography variant="h5">Are you absolutely sure?</Typography>
+            <IconButton
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+            >
+              <CloseIcon
+                sx={{
+                  fontSize: '25px',
+                  padding: '0',
+                }}
+              />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Box>
+            <Typography
+              variant="h6"
+              sx={{
+                fontSize: '17px',
+              }}
+              color="text.primary"
+              gutterBottom
+            >
+              This action cannot be undone. This will permanently delete the{' '}
+              <strong>{circleData?.name}</strong> Circle, posts, questions,
+              answers, and remove all members.
+            </Typography>
+            <Typography
+              sx={{
+                marginTop: '30px',
+                fontSize: '17px',
+              }}
+              color="text.primary"
+              gutterBottom
+            >
+              Please type <strong>{circleData?.name}</strong> to confirm.
+            </Typography>
+          </Box>
+          <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+            <TextField
+              id="outlined-basic"
+              variant="outlined"
+              fullWidth
+              // helperText={}
+              margin="normal"
+              // value={}
+              onChange={e => handleOnChangeInput(e.target.value)}
+              // error={}
+              required
+            />
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            sx={{
+              padding: '10px 20px',
+              margin: '0 14px',
+              textTransform: 'initial',
+            }}
+            fullWidth
+            color="error"
+            disabled={!isDeleting}
+            onClick={handleSubmit}
+            variant="contained"
+          >
+            I understand the consequences, delete this Circle.
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
   )
 }
 
