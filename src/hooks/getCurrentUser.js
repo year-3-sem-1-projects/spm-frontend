@@ -9,7 +9,6 @@ const GetCurrentUser = () => {
     if (currentUser && !user) {
       const decodedToken = jwt_decode(currentUser)
       setUser(decodedToken.data)
-      console.log('decodedToken', user)
     }
   }, [user, currentUser])
   if (user != null) return user
