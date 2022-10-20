@@ -130,7 +130,10 @@ const DiscoverCircles = () => {
             }}
           >
             <Grid item md={3}>
-              <FilterOptions handleClick={handleClickCategory} />
+              <FilterOptions
+                handleClick={handleClickCategory}
+                isDefaultChecked={true}
+              />
             </Grid>
             <Grid item md={9}>
               <Grid

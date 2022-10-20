@@ -31,3 +31,11 @@ export const updateCircle = async data => {
     console.error(err)
   }
 }
+
+export const deleteCircle = async data => {
+  try {
+    return await axios.delete(`/api/circle/remove/circle`, { data })
+  } catch (err) {
+    console.error(err)
+  }
+}
