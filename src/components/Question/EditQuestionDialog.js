@@ -14,6 +14,7 @@ export default function EditQuestionDialog({
   isEditDialogOpen,
   handleCloseEditDialog,
   editData,
+  setQuestionData,
 }) {
   const currentUser = GetCurrentUser()
 
@@ -47,6 +48,11 @@ export default function EditQuestionDialog({
       }
       console.log('edit dataaaaaaaa', data)
       const result = await updateQuestion(data)
+      setQuestionData(prev => {
+        const index = prev.findIndex(item => item._id === editData._id)
+        prev[index] = data
+        return [...prev]
+      })
       console.log(result)
     }
     handleCloseEditDialog()

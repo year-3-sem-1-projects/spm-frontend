@@ -10,10 +10,8 @@ import categories from '../../constants/categories'
 import GetCurrentUser from '../../hooks/getCurrentUser'
 import { createQuestion } from '../../services/Question'
 
-export default function AddQuestionDialog({
-  isDialogOpened,
-  handleCloseDialog,
-}) {
+export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog, setQuestionData }) {
+
   const currentUser = GetCurrentUser()
 
   const [fullWidth] = useState(true)
@@ -48,8 +46,9 @@ export default function AddQuestionDialog({
         user_email: currentUser.email,
       }
       const result = await createQuestion(questionContent)
-      console.log(result)
-      handleCloseDialog(false)
+      console.log('THIS IS THE RESULT AFTER ADDING Q::::::', result)
+      setQuestionData(prev => [questionContent, ...prev])
+      handleCloseDialog(false);
     }
   }
 

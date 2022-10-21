@@ -19,11 +19,11 @@ import DeleteQuestionDialog from './DeleteQuestionDialog';
 // import GetCurrentUser from '../../hooks/getCurrentUser';
 import jwt_decode from 'jwt-decode';
 
-export default function QuestionComponent({data}) {
+export default function QuestionComponent({data, setQuestionData }) {
     console.log('DATA:::::', data)
     // const currentUser = GetCurrentUser()
     const currentUser = jwt_decode(localStorage.getItem('token')).data
-    console.log('currentUser in Question', currentUser)
+    // console.log('currentUser in Question', currentUser)
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -63,8 +63,8 @@ export default function QuestionComponent({data}) {
     console.log('currentUseremail: ',)
   return (
     <>
-        <DeleteQuestionDialog deleteData={data} isDeleteDialogOpen={isDeleteOpen} handleCloseDeleteDialog={setIsDeleteOpen} />  
-        <EditQuestionDialog editData={data} isEditDialogOpen={isEditOpen} handleCloseEditDialog={handleEdit}/>
+        <DeleteQuestionDialog deleteData={data} isDeleteDialogOpen={isDeleteOpen} handleCloseDeleteDialog={setIsDeleteOpen} setQuestionData={setQuestionData}  />  
+        <EditQuestionDialog editData={data} isEditDialogOpen={isEditOpen} handleCloseEditDialog={handleEdit} setQuestionData={setQuestionData}  />
      {/* Question component card */}
         <Box
             sx={{
