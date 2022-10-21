@@ -1,52 +1,53 @@
-import React, { useState } from "react";
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import categories from '../../constants/categories';
+import React, { useState } from 'react'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import MenuItem from '@mui/material/MenuItem'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import categories from '../../constants/categories'
 import GetCurrentUser from '../../hooks/getCurrentUser'
-import { createQuestion } from "../../services/Question";
+import { createQuestion } from '../../services/Question'
 
-export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog }) {
+export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog, setQuestionData }) {
 
-  const currentUser = GetCurrentUser();
+  const currentUser = GetCurrentUser()
 
-  const [fullWidth] = useState(true);
-  const [maxWidth] = useState("sm");
+  const [fullWidth] = useState(true)
+  const [maxWidth] = useState('sm')
 
-  const [question, setQuestion] = useState('');
-  const [category, setCategory] = useState('');
-  const [questionError, setQuestionError] = useState(false);
-  const [categoryError, setCategoryError] = useState(false);
+  const [question, setQuestion] = useState('')
+  const [category, setCategory] = useState('')
+  const [questionError, setQuestionError] = useState(false)
+  const [categoryError, setCategoryError] = useState(false)
 
   const handleClose = () => {
-    handleCloseDialog(false);
-  };
+    handleCloseDialog(false)
+  }
 
   async function handleSubmit(e) {
-    e.preventDefault(); 
+    e.preventDefault()
 
-    setQuestionError(false);
-    setCategoryError(false);
+    setQuestionError(false)
+    setCategoryError(false)
 
-    if(question === '') {
-      setQuestionError(true);
+    if (question === '') {
+      setQuestionError(true)
     }
-    if(category === '') {
-      setCategoryError(true);
+    if (category === '') {
+      setCategoryError(true)
     }
-    
-    if(question && category) {
+
+    if (question && category) {
       const questionContent = {
         question: question,
         category: category,
-        user_email: currentUser.email 
+        user_email: currentUser.email,
       }
       const result = await createQuestion(questionContent)
-      console.log(result)
+      console.log('THIS IS THE RESULT AFTER ADDING Q::::::', result)
+      setQuestionData(prev => [questionContent, ...prev])
       handleCloseDialog(false);
     }
   }
@@ -61,15 +62,11 @@ export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog })
         aria-labelledby="max-width-dialog-title"
       >
         <DialogTitle>Add Your Question</DialogTitle>
-        <form 
-          noValidate 
-          autoComplete="off"
-          onSubmit={handleSubmit} 
-        >
+        <form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <DialogContent>
             {/* user component */}
             <TextField
-              onChange={(e) => setQuestion(e.target.value)}
+              onChange={e => setQuestion(e.target.value)}
               label="Question"
               placeholder="Type your question here"
               variant="filled"
@@ -78,10 +75,10 @@ export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog })
               rows={5}
               required
               error={questionError}
-              sx={{marginTop: 2, marginBottom: 2, display: 'block'}}
+              sx={{ marginTop: 2, marginBottom: 2, display: 'block' }}
             />
             <TextField
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={e => setCategory(e.target.value)}
               select
               label="Category"
               value={category}
@@ -89,9 +86,9 @@ export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog })
               fullWidth
               required
               error={categoryError}
-              sx={{marginTop: 2, marginBottom: 2, display: 'block'}}
+              sx={{ marginTop: 2, marginBottom: 2, display: 'block' }}
             >
-              {categories.map((option) => (
+              {categories.map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
@@ -99,13 +96,15 @@ export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog })
             </TextField>
           </DialogContent>
           <DialogActions>
-            <Button variant="text"  onClick={handleClose} type="Submit">Cancel</Button>
-            <Button onClick={handleSubmit} variant="contained">Add</Button>
+            <Button variant="text" onClick={handleClose} type="Submit">
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} variant="contained">
+              Add
+            </Button>
           </DialogActions>
         </form>
       </Dialog>
     </React.Fragment>
-  );
+  )
 }
-
-

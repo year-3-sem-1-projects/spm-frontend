@@ -45,11 +45,10 @@ export const getUserInterests = async (email) => {
     }
 }
 
-
-//question read by user id function
-export const readQuestionByUserId = async ({user_email}) => {
+//question read by user function
+export const readQuestionByUser = async (email) => {
     try {
-        return (await axios.get(`/api/question/get/${user_email}`)).data.data
+        return (await axios.get(`/api/get/my-questions/${email}`)).data.data
     } catch (err) {
         console.error(err)
     }

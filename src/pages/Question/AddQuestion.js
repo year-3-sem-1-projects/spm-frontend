@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import AddQuestionDialog from "../../components/Question/AddQuestionDialog";
 
-export default function AddQuestion() {
+export default function AddQuestion({setQuestionData}) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpen = () => {
@@ -15,6 +15,7 @@ export default function AddQuestion() {
       <AddQuestionDialog
         isDialogOpened={isOpen}
         handleCloseDialog={() => setIsOpen(false)}
+        setQuestionData={setQuestionData}
       />
       <Button 
         fullWidth 

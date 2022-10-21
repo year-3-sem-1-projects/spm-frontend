@@ -11,9 +11,7 @@ import IconButton from '@mui/joy/IconButton'
 import Input from '@mui/joy/Input'
 import Typography from '@mui/joy/Typography'
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder'
-import ModeCommentOutlined from '@mui/icons-material/ModeCommentOutlined'
 import SendOutlined from '@mui/icons-material/SendOutlined'
-import Face from '@mui/icons-material/Face'
 import BookmarkBorderRoundedIcon from '@mui/icons-material/BookmarkBorderRounded'
 import EditPostDialog from './EditPostDialog'
 import DeletePostDialog from './DeletePostDialog'
@@ -25,16 +23,65 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import ModeEditIcon from '@mui/icons-material/ModeEdit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { RemoveRedEyeOutlined } from '@material-ui/icons'
-import { RemoveRedEyeTwoTone } from '@mui/icons-material'
+import ViewPost from './ViewPost'
+import jwt_decode from 'jwt-decode'
+
+// import FormControlLabel from '@material-ui/core/FormControlLabel'
+// import Checkbox from '@material-ui/core/Checkbox'
+// import Favorite from '@material-ui/icons/Favorite'
 
 export default function PostComponent({ data }) {
   console.log('dataaaaaa', data)
+
+  const currentUser = jwt_decode(localStorage.getItem('token')).data
+  console.log('currentUser in post', currentUser)
+
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleOpen = () => {
+    setIsOpen(!isOpen)
+  }
 
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
 
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+
+  const [like, setLike] = useState(0)
+  const [dislike, setDisLike] = useState(1)
+
+  const [likeactive, setLikeActive] = useState(false)
+  const [dislikeactive, setDisLikeActive] = useState(false)
+
+  function likef() {
+    if (likeactive) {
+      setLikeActive(false)
+      setLike(like - 1)
+    } else {
+      setLikeActive(true)
+      setLike(like + 1)
+      if (dislikeactive) {
+        setDisLikeActive(false)
+        setLike(like + 1)
+        setDisLike(dislike - 1)
+      }
+    }
+  }
+  // function dislikef() {
+  //   if (dislikeactive) {
+  //     setDisLikeActive(false)
+  //     setDisLike(dislike - 1)
+  //   } else {
+  //     setDisLikeActive(true)
+  //     setDisLike(like + 1)
+  //     if (dislikeactive) {
+  //       setLikeActive(false)
+  //       setDisLike(dislike + 1)
+  //       setLike(like - 1)
+  //     }
+  //   }
+  // }
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
@@ -54,6 +101,8 @@ export default function PostComponent({ data }) {
     setAnchorEl(null)
     setIsDeleteOpen(!isDeleteOpen)
   }
+
+  console.log('currentUseremail :')
   return (
     <>
       <DeletePostDialog
@@ -66,6 +115,11 @@ export default function PostComponent({ data }) {
         isEditDialogOpen={isEditOpen}
         handleCloseEditDialog={handleEdit}
       />
+      <ViewPost
+        isDialogOpened={isOpen}
+        handleCloseDialog={() => setIsOpen(false)}
+      />
+
       <Card
         elevation={3}
         sx={{
@@ -102,37 +156,26 @@ export default function PostComponent({ data }) {
               }}
             />
           </Box>
-          <Typography fontWeight="lg">R.Lakshika De Zoysa</Typography>
+          <Typography fontWeight="lg">{data.username}</Typography>
 
-          {/* <div>
-            <Text color="dimmed">R.Lakshika De Zoysa</Text>
-            <Group>
-              <Text color="dimmed">
-                created At:{Date(data.created_at).toString().slice(3, 15)}
-              </Text>
-
-              <Text color="dimmed">
-                {' '}
-                - updated At:{Date(data.edited_at).toString().slice(3, 15)}
-              </Text>
-            </Group>
-          </div> */}
           <IconButton
             variant="plain"
             color="neutral"
             size="sm"
             sx={{ ml: 'auto' }}
           >
-            <MoreHorizIcon
-              sx={{
-                float: 'right',
-                cursor: 'pointer',
-                '&:hover': {
-                  color: 'primary.main',
-                },
-              }}
-              onClick={handleClick}
-            />
+            {currentUser.email === data.user_email ? (
+              <MoreHorizIcon
+                sx={{
+                  float: 'right',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    color: 'primary.main',
+                  },
+                }}
+                onClick={handleClick}
+              />
+            ) : null}
             <Menu
               aria-labelledby="demo-positioned-button"
               anchorEl={anchorEl}
@@ -172,10 +215,24 @@ export default function PostComponent({ data }) {
         <Box sx={{ display: 'flex', alignItems: 'center', mx: -1, my: 1 }}>
           <Box sx={{ width: 0, display: 'flex', gap: 0.5 }}>
             <IconButton variant="plain" color="neutral" size="sm">
-              <FavoriteBorder />
+              <FavoriteBorder
+                onClick={likef}
+                style={{ color: likef ? 'red' : 'black' }}
+              />
+
+              {/* <FormControlLabel
+                control={
+                  <Checkbox
+                    onClick={likef}
+                    icon={<FavoriteBorder />}
+                    checkedIcon={<Favorite />}
+                    name="checkedH"
+                  />
+                }
+              /> */}
             </IconButton>
             <IconButton variant="plain" color="neutral" size="sm">
-              <RemoveRedEyeOutlined />
+              <RemoveRedEyeOutlined onClick={handleOpen} />
             </IconButton>
             <IconButton variant="plain" color="neutral" size="sm">
               <SendOutlined />
@@ -216,49 +273,15 @@ export default function PostComponent({ data }) {
           fontWeight="lg"
           textColor="text.primary"
         >
-          0 Likes
+          Like{like}
         </Link>
-        {/* <Typography fontSize="sm">
-          <Link
-            component="button"
-            color="neutral"
-            fontWeight="lg"
-            textColor="text.primary"
-          >
-            MUI
-          </Link>{' '}
-          {data.description}
-        </Typography>
-        <Link
-          component="button"
-          underline="none"
-          fontSize="sm"
-          startDecorator="…"
-          sx={{ color: 'text.tertiary' }}
-        >
-          more
-        </Link> */}
-        {/* <Link
-          component="button"
-          underline="none"
-          fontSize="10px"
-          sx={{ color: 'text.tertiary', my: 0.5 }}
-        >
-          {data.created_at}
-        </Link> */}
+        {/* <Button onClick={likef}>Like {like}</Button>
+        <Button onClick={dislikef}>Dislike {dislike}</Button> */}
+
         <Typography fontWeight="sm">
           created At:{Date(data.created_at).toString().slice(3, 15)}
         </Typography>
         <CardOverflow sx={{ p: 'var(--Card-padding)', display: 'flex' }}>
-          {/* <IconButton size="sm" variant="plain" color="neutral" sx={{ ml: -1 }}>
-            <Face />
-          </IconButton>
-          <Input
-            variant="plain"
-            size="sm"
-            placeholder="Add a comment…"
-            sx={{ flexGrow: 1, mr: 1, '--Input-focusedThickness': '0px' }}
-          /> */}
           <Chip
             label={data.category}
             sx={{
