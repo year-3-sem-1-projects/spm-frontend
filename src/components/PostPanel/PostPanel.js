@@ -3,9 +3,11 @@ import CreateIcon from '@mui/icons-material/Create'
 import RateReviewTwoToneIcon from '@mui/icons-material/RateReviewTwoTone'
 import Card from '@mui/joy/Card'
 import GetCurrentUser from '../../hooks/getCurrentUser'
+import jwt_decode from 'jwt-decode'
 
 const PostPanel = () => {
-  const user = GetCurrentUser();
+  const user = jwt_decode(localStorage.getItem('token')).data
+  // GetCurrentUser();
   console.log('user', user)
   return (
     <>
