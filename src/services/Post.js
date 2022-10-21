@@ -45,6 +45,14 @@ export const readPostByUserId = async ({ user_email }) => {
   }
 }
 
+export const searchPost = async postContent => {
+  try {
+    return (await axios.get(`/api/post/search`, postContent)).data
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 // import axios from '../lib/axios'
 
 // //post create function

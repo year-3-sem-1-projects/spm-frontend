@@ -14,3 +14,8 @@ export const verify = async data => {
   const response = await axios.post('/api/auth/register/verify', data)
   return response
 }
+
+export const updateUser = async data => {
+  const response = await axios.post('/api/user/editUser', data)
+  return response
+}
