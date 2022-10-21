@@ -39,3 +39,11 @@ export const deleteCircle = async data => {
     console.error(err)
   }
 }
+
+export const leaveCircle = async data => {
+  try {
+    return await axios.delete(`/api/circle/leave`, { data })
+  } catch (err) {
+    console.error(err)
+  }
+}
