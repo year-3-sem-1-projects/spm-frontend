@@ -56,8 +56,8 @@ export default function DeletePostDialog({
               display: 'flex',
             }}
           >
-            Your post and all the answers will be deleted permanently.This
-            action cannot be undone.
+            Your post and all the likes will be deleted permanently.This action
+            cannot be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>

@@ -7,13 +7,20 @@ import PostComponent from '../../components/Post/PostComponent'
 import { readPost } from '../../services/Post'
 import GetCurrentUser from '../../hooks/getCurrentUser'
 import jwt_decode from 'jwt-decode'
+import EditUserDialog from './EditUserDialog'
 
 const UserProfile = () => {
-  const user = jwt_decode(localStorage.getItem('token')).data;
+  const user = jwt_decode(localStorage.getItem('token')).data
+  
   // GetCurrentUser();
   const [postData, setPostData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleOpen = () => {
+    setIsOpen(!isOpen)
+  }
 
   useEffect(() => {
     readPost()
@@ -71,9 +78,17 @@ const UserProfile = () => {
           <span className="text-2xl font-inter font-bold">
             @{user.username}
           </span>
-          <button className="bg-[#1976D2] text-white p-2 flex text-center items-center rounded-sm">
+          <button
+            className="bg-[#1976D2] text-white p-2 flex text-center items-center rounded-sm"
+            onClick={() => handleOpen()}
+          >
             Edit Profile
           </button>
+          <EditUserDialog
+            isDialogOpened={isOpen}
+            handleCloseDialog={() => setIsOpen(false)}
+            user={user}
+          />
         </div>
       </div>
       <br></br>
@@ -88,7 +103,7 @@ const UserProfile = () => {
           </div>
         </div>
       </div>
-      <div className='h-[595px] w-[595px] ml-[450px]'>
+      <div className="h-[595px] w-[595px] ml-[450px]">
         {postData?.map(post => (
           <PostComponent data={post} />
         ))}
