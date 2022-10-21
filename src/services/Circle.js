@@ -47,3 +47,12 @@ export const leaveCircle = async data => {
     console.error(err)
   }
 }
+
+export const joinCircle = async data => {
+  console.log('joinCircle:::::::', data)
+  try {
+    return await axios.post(`/api/circle/join`, data)
+  } catch (err) {
+    console.error(err)
+  }
+}
