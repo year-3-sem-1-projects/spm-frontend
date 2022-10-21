@@ -15,7 +15,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 
 const Dashboard = () => {
   const { role, name } = useParams()
-  const items = [
+  const itemsAdmin = [
     {
       name: 'Settings',
       icon: <SettingsIcon />,
@@ -30,6 +30,18 @@ const Dashboard = () => {
       name: 'Stats',
       icon: <DonutSmallIcon />,
       link: `stats`,
+    },
+    {
+      name: 'Leave Circle',
+      icon: <LogoutIcon />,
+      link: `leave`,
+    },
+  ]
+  const itemsMember = [
+    {
+      name: 'People',
+      icon: <GroupsIcon />,
+      link: `people`,
     },
     {
       name: 'Leave Circle',
@@ -67,7 +79,7 @@ const Dashboard = () => {
                 >
                   <ArrowBackIosIcon
                     sx={{ cursor: 'pointer' }}
-                    onClick={() => window.history.back()}
+                    onClick={() => window.location.replace(`/circle/${name}`)}
                   />
                   <Typography
                     variant="body1"
@@ -109,7 +121,9 @@ const Dashboard = () => {
               </Paper>
             </Grid>
             <Grid item className={`pb-10`} zeroMinWidth>
-              <SideNavigation menuItems={items} />
+              <SideNavigation
+                menuItems={role === 'admin' ? itemsAdmin : itemsMember}
+              />
             </Grid>
           </Grid>
           <Grid item md={6}>
@@ -120,9 +134,13 @@ const Dashboard = () => {
               }}
             >
               <Routes>
-                <Route path="/settings" element={<Settings />} />
+                {role === 'admin' && (
+                  <>
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/stats" element={<Stats />} />
+                  </>
+                )}
                 <Route path="/people" element={<People />} />
-                <Route path="/stats" element={<Stats />} />
                 <Route path="/leave" element={<Leave />} />
               </Routes>
             </Grid>
