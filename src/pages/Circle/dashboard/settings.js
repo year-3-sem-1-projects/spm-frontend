@@ -32,7 +32,8 @@ const Settings = () => {
 
   const [circlesData, setCirclesData] = useState([])
   const [circleData, setCircleData] = useState({})
-  const [circleName, setCircleName] = useState()
+  const [circleName, setCircleName] = useState(name)
+  const [circleAdmin, setCircleAdmin] = useState()
   const [circleDescription, setCircleDescription] = useState('')
   const [circleImage, setCircleImage] = useState('')
   const [circleCoverImage, setCircleCoverImage] = useState('')
@@ -56,6 +57,7 @@ const Settings = () => {
         setCircleData(data)
         setCircleName(data.name)
         setCircleDescription(data.description)
+        setCircleAdmin(data.admin)
         setCircleImage(data.iconImage)
         setCircleCoverImage(data.coverImage)
         setCircleDetails(data.details)
@@ -70,7 +72,7 @@ const Settings = () => {
       })
   }, [name])
   console.log('circleData', circleData)
-  console.log('circleImage', circleImage)
+  console.log('circleName', circleName)
   async function handleSubmit(e) {
     e.preventDefault()
 
@@ -113,14 +115,15 @@ const Settings = () => {
       <>
         <Box>
           <GeneralSettings
-            handleSubmit={handleSubmit}
             handleOnInputName={handleOnInputName}
             circleName={circleName}
+            circleAdmin={circleAdmin}
             setCircleName={setCircleName}
             circleNameError={circleNameError}
             circleNameExistsError={circleNameExistsError}
             circleDescription={circleDescription}
             setCircleDescription={setCircleDescription}
+            user={user}
           />
         </Box>
         <Box
@@ -160,16 +163,60 @@ const Settings = () => {
   }
 }
 
-const GeneralSettings = (
-  handleSubmit,
-  handleOnInputName,
+const GeneralSettings = ({
   circleName,
   setCircleName,
   circleNameError,
+  circleAdmin,
   circleNameExistsError,
   circleDescription,
   setCircleDescription,
-) => {
+  user,
+}) => {
+  const [newCircleName, setNewCircleName] = useState(circleName)
+  const [newCircleDescription, setNewCircleDescription] =
+    useState(circleDescription)
+  const handleSubmit = async e => {
+    e.preventDefault()
+    if (
+      (circleName === newCircleName &&
+        circleDescription === newCircleDescription) ||
+      newCircleName.length === 0
+    )
+      return
+    try {
+      if (
+        circleDescription !== newCircleDescription &&
+        circleName === newCircleName
+      ) {
+        await updateCircle({
+          name: circleName,
+          admin: circleAdmin,
+          user: user,
+          description: newCircleDescription,
+        })
+        return
+      }
+      await updateCircle({
+        prevName: circleName,
+        name: newCircleName,
+        admin: circleAdmin,
+        user: user,
+        description: newCircleDescription,
+      })
+      window.location.replace(
+        `/circle/${newCircleName}/admin/dashboard/settings`,
+      )
+    } catch (error) {}
+  }
+  const handleOnChangeInputName = value => {
+    console.log('value', value)
+    setNewCircleName(value)
+  }
+  const handleOnChangeInputDescription = value => {
+    setNewCircleDescription(value)
+  }
+  console.log('circle name::::::::', circleName)
   return (
     <>
       <Paper className={`p-5`}>
@@ -186,23 +233,23 @@ const GeneralSettings = (
             marginTop: '30px',
           }}
         >
-          <form noValidate autoComplete="off" onSubmit={e => handleSubmit(e)}>
+          <form noValidate autoComplete="off" onSubmit={handleSubmit}>
             <TextField
               id="outlined-basic"
               label="Circle Name"
               variant="outlined"
               fullWidth
-              onInput={e => handleOnInputName(e.target.value)}
-              value={circleName}
-              onChange={event => setCircleName(event.target.value)}
-              error={circleNameError}
-              helperText={
-                circleNameError
-                  ? 'Circle name should have atleast 5 characters'
-                  : circleNameExistsError
-                  ? 'Circle name already exists'
-                  : ''
-              }
+              value={newCircleName}
+              autoFocus
+              onChange={event => handleOnChangeInputName(event.target.value)}
+              // error={circleNameError}
+              // helperText={
+              //   circleNameError
+              //     ? 'Circle name should have atleast 5 characters'
+              //     : circleNameExistsError
+              //     ? 'Circle name already exists'
+              //     : ''
+              // }
               sx={{
                 marginBottom: '20px',
               }}
@@ -212,8 +259,10 @@ const GeneralSettings = (
               label="Description"
               variant="outlined"
               fullWidth
-              value={circleDescription}
-              onChange={event => setCircleDescription(event.target.value)}
+              value={newCircleDescription}
+              onChange={event =>
+                handleOnChangeInputDescription(event.target.value)
+              }
               sx={{
                 marginBottom: '20px',
               }}
