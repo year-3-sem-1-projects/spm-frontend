@@ -35,7 +35,15 @@ const People = () => {
         setPeople([])
       })
   }, [name])
+  const handleSearch = value => {
+    if (value === '') return setFilterPeople(people)
 
+    setFilterPeople(
+      people.filter(person =>
+        person.username.toLowerCase().includes(value.toLowerCase()),
+      ),
+    )
+  }
   if (loading) {
     return <Loading loading={loading} />
   } else if (error) {
@@ -81,7 +89,19 @@ const People = () => {
           >
             Members
           </Typography>
-
+          <Box>
+            <TextField
+              sx={{
+                marginTop: '20px',
+                marginBottom: '20px',
+              }}
+              fullWidth
+              id="outlined-basic"
+              placeholder={`Search for members in ${circle.name}`}
+              variant="outlined"
+              onChange={e => handleSearch(e.target.value)}
+            />
+          </Box>
           {filterPeople.map(person => {
             if (person._id === people[0]._id) {
               return null
