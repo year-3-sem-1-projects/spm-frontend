@@ -26,7 +26,32 @@ export const createCircle = async data => {
 
 export const updateCircle = async data => {
   try {
-    return (await axios.put(`/api/circle/update`, data)).data
+    return await axios.put(`/api/circle/update`, data)
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const deleteCircle = async data => {
+  try {
+    return await axios.delete(`/api/circle/remove/circle`, { data })
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const leaveCircle = async data => {
+  try {
+    return await axios.delete(`/api/circle/leave`, { data })
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const joinCircle = async data => {
+  console.log('joinCircle:::::::', data)
+  try {
+    return await axios.post(`/api/circle/join`, data)
   } catch (err) {
     console.error(err)
   }

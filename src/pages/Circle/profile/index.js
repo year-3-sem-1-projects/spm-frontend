@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getCircle } from '../../../services/Circle'
+import { getCircle, joinCircle } from '../../../services/Circle'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
@@ -15,7 +15,7 @@ import Popover from './Popover'
 import SecurityIcon from '@mui/icons-material/Security'
 import PersonIcon from '@mui/icons-material/Person'
 import AddBoxIcon from '@mui/icons-material/AddBox'
-import GetCurrentUser from '../../../hooks/getCurrentUser'
+import jwt_decode from 'jwt-decode'
 import { DEFAULT_COVER_IMAGE, EMPTY_BOX } from '../../../constants/circle'
 const roles = {
   admin: <SecurityIcon />,
@@ -30,36 +30,28 @@ const Profile = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
+  const [role, setRole] = useState('Follow')
 
-  const user = GetCurrentUser()
+  const user = jwt_decode(localStorage.getItem('token')).data
   useEffect(() => {
-    if (user !== null) {
-      getCircle(name)
-        .then(data => {
-          setProfile(data)
-          setLoading(false)
-        })
-        .catch(err => {
-          console.error(err)
-          setError(true)
-          setLoading(false)
-          setProfile({})
-        })
-    }
-  }, [name, user])
+    getCircle(name)
+      .then(data => {
+        setProfile(data)
+        if (data.admin.email === user.email) setRole('Admin')
+        else if (data.members.find(member => member.email === user.email))
+          setRole('Member')
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error(err)
+        setError(true)
+        setLoading(false)
+        setProfile({})
+      })
+  }, [name, role])
 
   const handleClose = () => {
     setAnchorEl(null)
-  }
-
-  const checkMemberValidity = () => {
-    if (profile.members) {
-      const member = profile.members.find(member => member.email === user.email)
-      if (member) {
-        return true
-      }
-    }
-    return false
   }
 
   if (loading) {
@@ -67,6 +59,8 @@ const Profile = () => {
   } else if (error) {
     return <div>Error</div>
   } else {
+    // checkMemberValidity()
+    console.log('profile ::::::::::::', role)
     return (
       <>
         <Box
@@ -125,7 +119,17 @@ const Profile = () => {
                 right: '26%',
               }}
             >
-              {user.email === profile.admin.email ? (
+              <AuthButton
+                role={role}
+                setRole={setRole}
+                user={user}
+                setAnchorEl={setAnchorEl}
+                handleClose={handleClose}
+                name={profile.name}
+                anchorEl={anchorEl}
+              />
+
+              {/* {user.email === profile.admin.email ? (
                 <AuthButton
                   role={'Admin'}
                   setAnchorEl={setAnchorEl}
@@ -143,7 +147,7 @@ const Profile = () => {
                 />
               ) : (
                 <AuthButton role={'Follow'} />
-              )}
+              )} */}
             </Box>
           </Box>
           <Box
@@ -209,7 +213,29 @@ const Profile = () => {
   }
 }
 
-function AuthButton({ role, setAnchorEl, anchorEl, handleClose, name }) {
+function AuthButton({
+  role,
+  user,
+  setRole,
+  setAnchorEl,
+  anchorEl,
+  handleClose,
+  name,
+}) {
+  console.log('authbutton ::::::::::::', role)
+  const handleFollow = async () => {
+    try {
+      await joinCircle({
+        name,
+        user: {
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+        },
+      })
+      setRole('Member')
+    } catch (error) {}
+  }
   return role === 'Follow' ? (
     <Button
       variant="outlined"
@@ -226,6 +252,7 @@ function AuthButton({ role, setAnchorEl, anchorEl, handleClose, name }) {
           color: '#fff',
         },
       }}
+      onClick={handleFollow}
     >
       {role}
     </Button>

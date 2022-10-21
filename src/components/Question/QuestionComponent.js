@@ -16,10 +16,14 @@ import MenuItem from '@mui/material/MenuItem';
 import { ListItemIcon, ListItemText } from '@mui/material';
 import EditQuestionDialog from './EditQuestionDialog';
 import DeleteQuestionDialog from './DeleteQuestionDialog';
+// import GetCurrentUser from '../../hooks/getCurrentUser';
+import jwt_decode from 'jwt-decode';
 
-export default function QuestionComponent({data}) {
-
-    // console.log("dataaaaaa", data)
+export default function QuestionComponent({data, setQuestionData }) {
+    console.log('DATA:::::', data)
+    // const currentUser = GetCurrentUser()
+    const currentUser = jwt_decode(localStorage.getItem('token')).data
+    // console.log('currentUser in Question', currentUser)
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -56,11 +60,11 @@ export default function QuestionComponent({data}) {
             return "Not Yet Answered";
         }
     }
-
+    console.log('currentUseremail: ',)
   return (
     <>
-        <DeleteQuestionDialog deleteData={data} isDeleteDialogOpen={isDeleteOpen} handleCloseDeleteDialog={setIsDeleteOpen} />  
-        <EditQuestionDialog editData={data} isEditDialogOpen={isEditOpen} handleCloseEditDialog={handleEdit}/>
+        <DeleteQuestionDialog deleteData={data} isDeleteDialogOpen={isDeleteOpen} handleCloseDeleteDialog={setIsDeleteOpen} setQuestionData={setQuestionData}  />  
+        <EditQuestionDialog editData={data} isEditDialogOpen={isEditOpen} handleCloseEditDialog={handleEdit} setQuestionData={setQuestionData}  />
      {/* Question component card */}
         <Box
             sx={{
@@ -69,7 +73,7 @@ export default function QuestionComponent({data}) {
         >
             <Card elevation={2} >
                 <CardContent>
-                    <MoreHorizIcon 
+                    {currentUser.email === data.user_email ? <MoreHorizIcon 
                         sx={{
                             float: 'right',
                             cursor: 'pointer',
@@ -78,7 +82,7 @@ export default function QuestionComponent({data}) {
                             }
                         }}
                         onClick={handleClick}
-                    />
+                    /> : null }
                     <Menu
                         aria-labelledby="demo-positioned-button"
                         anchorEl={anchorEl}
@@ -106,6 +110,7 @@ export default function QuestionComponent({data}) {
                             <ListItemText>Delete</ListItemText>
                         </MenuItem>
                     </Menu>
+                    
                     <Typography 
                         variant="h6"   
                         component="div"

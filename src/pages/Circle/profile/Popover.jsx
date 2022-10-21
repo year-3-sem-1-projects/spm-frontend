@@ -32,7 +32,11 @@ export default function CustomPopover({
           transform: 'translateY(-1%)',
         }}
       >
-        <Link to={`/circle/${name}/${role.toLowerCase()}/dashboard/settings`}>
+        <Link
+          to={`/circle/${name}/${role.toLowerCase()}/dashboard/${
+            role === 'Admin' ? 'settings' : 'people'
+          }`}
+        >
           {content}
         </Link>
       </Popover>

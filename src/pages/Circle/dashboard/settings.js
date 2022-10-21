@@ -1,34 +1,39 @@
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Paper,
-  TextField,
-  Typography,
-} from '@mui/material'
 import React, { useState } from 'react'
-import SideNavigation from '../../../components/SideNavigation/SideNavigation.jsx'
-import SettingsIcon from '@mui/icons-material/Settings'
-import GroupsIcon from '@mui/icons-material/Groups'
-import DonutSmallIcon from '@mui/icons-material/DonutSmall'
-import LogoutIcon from '@mui/icons-material/Logout'
-import { useParams } from 'react-router-dom'
-import SecurityIcon from '@mui/icons-material/Security'
+import { Router, useParams } from 'react-router-dom'
 import GetCurrentUser from '../../../hooks/getCurrentUser.js'
 import {
+  deleteCircle,
   getAllCircles,
   getCircle,
   updateCircle,
 } from '../../../services/Circle.js'
 import { useEffect } from 'react'
+import {
+  Box,
+  Button,
+  Paper,
+  TextField,
+  Grid,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+} from '@mui/material'
+import CreateIcon from '@mui/icons-material/Create'
+import Loading from '../../../components/Loading/Loading'
+import imageUpload from '../../../utils/imageUpload.js'
+import jwt_decode from 'jwt-decode'
+import CloseIcon from '@mui/icons-material/Close'
 
 const Settings = () => {
   const { role, name } = useParams()
+
   const [circlesData, setCirclesData] = useState([])
   const [circleData, setCircleData] = useState({})
-  const [circleName, setCircleName] = useState()
-
+  const [circleName, setCircleName] = useState(name)
+  const [circleAdmin, setCircleAdmin] = useState()
   const [circleDescription, setCircleDescription] = useState('')
   const [circleImage, setCircleImage] = useState('')
   const [circleCoverImage, setCircleCoverImage] = useState('')
@@ -37,8 +42,7 @@ const Settings = () => {
   const [circleNameExistsError, setCircleNameExistsError] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
-  const user = GetCurrentUser()
-  // const circleData = getCircle(name)
+  const user = jwt_decode(localStorage.getItem('token')).data
 
   useEffect(() => {
     getAllCircles()
@@ -53,7 +57,8 @@ const Settings = () => {
         setCircleData(data)
         setCircleName(data.name)
         setCircleDescription(data.description)
-        setCircleImage(data.image)
+        setCircleAdmin(data.admin)
+        setCircleImage(data.iconImage)
         setCircleCoverImage(data.coverImage)
         setCircleDetails(data.details)
         setLoading(false)
@@ -65,8 +70,9 @@ const Settings = () => {
         setCircleData({})
         setCirclesData([])
       })
-  }, [])
-
+  }, [name])
+  console.log('circleData', circleData)
+  console.log('circleName', circleName)
   async function handleSubmit(e) {
     e.preventDefault()
 
@@ -100,204 +106,648 @@ const Settings = () => {
     }
   }
 
-  const items = [
-    {
-      name: 'Settings',
-      icon: <SettingsIcon />,
-      link: 'settings',
-    },
-    {
-      name: 'People',
-      icon: <GroupsIcon />,
-      link: 'members',
-    },
-    {
-      name: 'Stats',
-      icon: <DonutSmallIcon />,
-      link: 'stats',
-    },
-    {
-      name: 'Leave Circle',
-      icon: <LogoutIcon />,
-      link: 'leave',
-    },
-  ]
+  if (loading) {
+    return <Loading loading={loading} />
+  } else if (error) {
+    return <div>Error</div>
+  } else {
+    return (
+      <>
+        <Box>
+          <GeneralSettings
+            handleOnInputName={handleOnInputName}
+            circleName={circleName}
+            circleAdmin={circleAdmin}
+            setCircleName={setCircleName}
+            circleNameError={circleNameError}
+            circleNameExistsError={circleNameExistsError}
+            circleDescription={circleDescription}
+            setCircleDescription={setCircleDescription}
+            user={user}
+          />
+        </Box>
+        <Box
+          sx={{
+            marginTop: '30px',
+          }}
+        >
+          <CircleDetails
+            circleDetails={circleDetails}
+            setCircleDetails={setCircleDetails}
+          />
+        </Box>
+        <Box
+          sx={{
+            marginTop: '30px',
+          }}
+        >
+          <CircleImages
+            circleImage={circleImage}
+            setCircleImage={setCircleImage}
+            circleCoverImage={circleCoverImage}
+            setCircleCoverImage={setCircleCoverImage}
+            circleData={circleData}
+            setCircleData={setCircleData}
+            user={user}
+          />
+        </Box>
+        <Box
+          sx={{
+            marginTop: '30px',
+          }}
+        >
+          <DeleteCircle circleData={circleData} user={user} />
+        </Box>
+      </>
+    )
+  }
+}
 
+const GeneralSettings = ({
+  circleName,
+  setCircleName,
+  circleNameError,
+  circleAdmin,
+  circleNameExistsError,
+  circleDescription,
+  setCircleDescription,
+  user,
+}) => {
+  const [newCircleName, setNewCircleName] = useState(circleName)
+  const [newCircleDescription, setNewCircleDescription] =
+    useState(circleDescription)
+  const handleSubmit = async e => {
+    e.preventDefault()
+    if (
+      (circleName === newCircleName &&
+        circleDescription === newCircleDescription) ||
+      newCircleName.length === 0
+    )
+      return
+    try {
+      if (
+        circleDescription !== newCircleDescription &&
+        circleName === newCircleName
+      ) {
+        await updateCircle({
+          name: circleName,
+          admin: circleAdmin,
+          user: user,
+          description: newCircleDescription,
+        })
+        return
+      }
+      await updateCircle({
+        prevName: circleName,
+        name: newCircleName,
+        admin: circleAdmin,
+        user: user,
+        description: newCircleDescription,
+      })
+      window.location.replace(
+        `/circle/${newCircleName}/admin/dashboard/settings`,
+      )
+    } catch (error) {}
+  }
+  const handleOnChangeInputName = value => {
+    console.log('value', value)
+    setNewCircleName(value)
+  }
+  const handleOnChangeInputDescription = value => {
+    setNewCircleDescription(value)
+  }
+  console.log('circle name::::::::', circleName)
   return (
     <>
-      <Box>
-        <Paper
-          elevation={0}
+      <Paper className={`p-5`}>
+        <Typography
+          variant="h6"
           sx={{
-            // width: '100vw',
-            p: 2,
-            backgroundColor: '#F5F5F5',
-            display: 'flex',
-            alignItems: 'center',
+            fontWeight: 'bold',
+          }}
+        >
+          General
+        </Typography>
+        <Box
+          sx={{
+            marginTop: '30px',
+          }}
+        >
+          <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+            <TextField
+              id="outlined-basic"
+              label="Circle Name"
+              variant="outlined"
+              fullWidth
+              value={newCircleName}
+              autoFocus
+              onChange={event => handleOnChangeInputName(event.target.value)}
+              // error={circleNameError}
+              // helperText={
+              //   circleNameError
+              //     ? 'Circle name should have atleast 5 characters'
+              //     : circleNameExistsError
+              //     ? 'Circle name already exists'
+              //     : ''
+              // }
+              sx={{
+                marginBottom: '20px',
+              }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Description"
+              variant="outlined"
+              fullWidth
+              value={newCircleDescription}
+              onChange={event =>
+                handleOnChangeInputDescription(event.target.value)
+              }
+              sx={{
+                marginBottom: '20px',
+              }}
+            />
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <Button variant="text" type="reset">
+                Reset
+              </Button>
+              <Button
+                autoFocus
+                onClick={e => handleSubmit(e)}
+                variant="contained"
+                sx={{
+                  marginLeft: '10px',
+                }}
+              >
+                Update
+              </Button>
+            </Box>
+          </form>
+        </Box>
+      </Paper>
+    </>
+  )
+}
+
+const CircleDetails = ({ circleDetails, setCircleDetails }) => {
+  const handleSubmit = e => {
+    e.preventDefault()
+  }
+  return (
+    <>
+      <Paper className={`p-5`}>
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 'bold',
+          }}
+        >
+          Details
+        </Typography>
+        <Box
+          sx={{
+            marginTop: '30px',
+          }}
+        >
+          <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+            <TextField
+              id="outlined-basic"
+              label="Details"
+              variant="outlined"
+              fullWidth
+              value={circleDetails}
+              onChange={event => setCircleDetails(event.target.value)}
+              sx={{
+                marginBottom: '20px',
+              }}
+            />
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <Button variant="text" type="reset">
+                Reset
+              </Button>
+              <Button
+                autoFocus
+                onClick={handleSubmit}
+                variant="contained"
+                sx={{
+                  marginLeft: '10px',
+                }}
+              >
+                Update
+              </Button>
+            </Box>
+          </form>
+        </Box>
+      </Paper>
+    </>
+  )
+}
+
+const CircleImages = ({
+  setCircleData,
+  circleData,
+  circleImage,
+  setCircleImage,
+  circleCoverImage,
+  setCircleCoverImage,
+  user,
+}) => {
+  const uploadImage = async (uploadedFile, icon = true) => {
+    console.log('file uploaded:::::: ', uploadedFile)
+    try {
+      const imgUrl = await imageUpload(uploadedFile, 'circle')
+      console.log('imgUrl:::::: ', imgUrl)
+      if (icon) {
+        try {
+          console.log('after icon image setup:::::: ', circleData)
+          const result = await updateCircle({
+            iconImage: imgUrl,
+            user,
+            id: circleData.id,
+            name: circleData.name,
+            admin: circleData.admin,
+          })
+          console.log('after uploading icon:::::: result', result)
+          setCircleImage(imgUrl)
+        } catch {
+          console.log('Update Image failed!')
+        }
+        return
+      }
+      try {
+        await updateCircle({
+          coverImage: imgUrl,
+          user,
+          id: circleData.id,
+          name: circleData.name,
+          admin: circleData.admin,
+        })
+        setCircleCoverImage(imgUrl)
+      } catch {
+        console.log('Update Image failed!')
+      }
+    } catch (error) {
+      alert.error('Error uploading image')
+    }
+  }
+  return (
+    <>
+      <Paper className={`p-5`}>
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 'bold',
+          }}
+        >
+          Visuals
+        </Typography>
+        <Box
+          sx={{
+            marginTop: '5px',
           }}
         >
           <Typography
-            variant="h5"
+            variant="body1"
             sx={{
-              fontWeight: 'bold',
-              marginLeft: '15vw',
+              fontSize: '12px',
             }}
           >
-            {circleData.name}
+            Use pictures to increase your Circle's growth
           </Typography>
-          <Button
-            variant="outlined"
-            startIcon={<SecurityIcon />}
+          <Box
             sx={{
-              position: 'absolute',
-              right: '24rem',
-              backgroundColor: '#fff',
-              color: '#000',
-              fontWeight: 'bold',
-              textTransform: 'none',
-              borderRadius: '20px',
-              boxShadow: '0px 0px 10px rgba(0,0,0,0.5)',
-              '&:hover': {
-                backgroundColor: '#000',
-                color: '#fff',
-              },
+              marginTop: '20px',
             }}
-            onClick={event => console.log(event.currentTarget)}
           >
-            {role}
-          </Button>
-        </Paper>
-      </Box>
-      <Container>
-        <Grid
-          container
-          columnSpacing={{ xs: 1, sm: 2, md: 4, lg: 6 }}
-          sx={{
-            marginTop: '50px',
-          }}
-        >
-          <Grid item md={3} zeroMinWidth>
-            <Grid
-              item
+            <Typography
+              variant="body1"
               sx={{
-                marginBottom: '40px',
+                fontWeight: 'bold',
               }}
             >
-              <Paper className={`p-5`}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {`${
-                    role.substring(0, 1).toUpperCase() + role.substring(1)
-                  } Dashboard`}
-                </Typography>
-              </Paper>
-            </Grid>
-            <Grid item className={`pb-10`} zeroMinWidth>
-              <SideNavigation menuItems={items} />
-            </Grid>
-          </Grid>
-          <Grid item md={6}>
-            <Grid
-              item
+              Icon
+            </Typography>
+            <Box
               sx={{
-                marginBottom: '40px',
+                marginTop: '10px',
               }}
             >
-              <Paper className={`p-5`}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: 'bold',
+              <Box
+                sx={{
+                  outline: '1px solid #000',
+                  width: '100px',
+                  aspectRatio: '1/1',
+                  borderRadius: '10%',
+                  position: 'relative',
+                  backgroundImage: `url(${circleImage})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              >
+                <input
+                  type="file"
+                  id="icon_upload"
+                  hidden
+                  onClick={e => {
+                    e.target.value = null
                   }}
-                >
-                  General
-                </Typography>
+                  onChange={e => {
+                    uploadImage(e.target.files[0])
+                  }}
+                />
+                <CreateIcon
+                  onClick={() => {
+                    document.getElementById('icon_upload').click()
+                  }}
+                  sx={{
+                    fontSize: '25px',
+                    padding: '4px',
+                    position: 'absolute',
+                    cursor: 'pointer',
+                    top: '-10%',
+                    right: '-10%',
+                    backgroundColor: '#fff',
+                    outline: '1px solid #000',
+                    borderRadius: '50%',
+                  }}
+                />
+              </Box>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              marginTop: '30px',
+            }}
+          >
+            <Typography
+              variant="body1"
+              sx={{
+                fontWeight: 'bold',
+              }}
+            >
+              Cover Photo
+            </Typography>
+            <Box
+              sx={{
+                marginTop: '10px',
+              }}
+            >
+              <Box
+                sx={{
+                  marginTop: '10px',
+                }}
+              >
                 <Box
                   sx={{
-                    marginTop: '30px',
+                    outline: '1px solid #000',
+                    width: '400px',
+                    aspectRatio: '2/1',
+                    borderRadius: '2%',
+                    position: 'relative',
+                    backgroundImage: `url(${circleCoverImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
                   }}
                 >
-                  <form noValidate autoComplete="off" onSubmit={handleSubmit}>
-                    <TextField
-                      id="outlined-basic"
-                      label="Circle Name"
-                      variant="outlined"
-                      fullWidth
-                      onInput={e => handleOnInputName(e.target.value)}
-                      value={circleName}
-                      onChange={event => setCircleName(event.target.value)}
-                      error={circleNameError}
-                      helperText={
-                        circleNameError
-                          ? 'Circle name should have atleast 5 characters'
-                          : circleNameExistsError
-                          ? 'Circle name already exists'
-                          : ''
-                      }
-                      sx={{
-                        marginBottom: '20px',
-                      }}
-                    />
-                    <TextField
-                      id="outlined-basic"
-                      label="Description"
-                      variant="outlined"
-                      fullWidth
-                      value={circleDescription}
-                      onChange={event =>
-                        setCircleDescription(event.target.value)
-                      }
-                      sx={{
-                        marginBottom: '20px',
-                      }}
-                    />
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                      }}
-                    >
-                      <Button variant="text" type="reset">
-                        Reset
-                      </Button>
-                      <Button
-                        autoFocus
-                        onClick={handleSubmit}
-                        variant="contained"
-                        sx={{
-                          marginLeft: '10px',
-                        }}
-                      >
-                        Update
-                      </Button>
-                    </Box>
-                  </form>
+                  <input
+                    type="file"
+                    id="cover_upload"
+                    hidden
+                    onClick={e => {
+                      e.target.value = null
+                    }}
+                    onChange={e => {
+                      uploadImage(e.target.files[0], false)
+                    }}
+                  />
+                  <CreateIcon
+                    onClick={() => {
+                      document.getElementById('cover_upload').click()
+                    }}
+                    sx={{
+                      fontSize: '25px',
+                      padding: '4px',
+                      position: 'absolute',
+                      cursor: 'pointer',
+                      top: '-3%',
+                      right: '-3%',
+                      backgroundColor: '#fff',
+                      outline: '1px solid #000',
+                      borderRadius: '50%',
+                    }}
+                  />
                 </Box>
-              </Paper>
-            </Grid>
-            {/* <Grid item zeroMinWidth>
-              <Paper className={`p-5`}>
-                <Typography variant="h5">Center</Typography>
-              </Paper>
-            </Grid>
-            <Grid item zeroMinWidth>
-              <Paper className={`p-5`}>
-                <Typography variant="h5">Center</Typography>
-              </Paper>
-            </Grid>
-            <Grid item zeroMinWidth>
-              <Paper className={`p-5`}>
-                <Typography variant="h5">Center</Typography>
-              </Paper> 
-            </Grid>*/}
-          </Grid>
-        </Grid>
-      </Container>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+      </Paper>
     </>
+  )
+}
+
+const DeleteCircle = ({ circleData, user }) => {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleOpen = () => {
+    setIsOpen(!isOpen)
+  }
+  return (
+    <>
+      <Paper className={`p-5`}>
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 'bold',
+          }}
+        >
+          Delete Circle
+        </Typography>
+        <Box
+          sx={{
+            marginTop: '5px',
+            padding: '10px',
+          }}
+        >
+          <Typography
+            variant="body1"
+            sx={{
+              fontSize: '12px',
+            }}
+          >
+            Deleting this Circle will remove the Circle page and all its content
+            and comments. This is permanent and cannot be undone.
+          </Typography>
+          <Box
+            sx={{
+              marginTop: '40px',
+
+              position: 'relative',
+            }}
+          >
+            <Button
+              sx={{
+                position: 'absolute',
+                right: '0',
+                bottom: '0',
+              }}
+              variant="contained"
+              color="error"
+              onClick={handleOpen}
+            >
+              Delete Circle
+            </Button>
+            <DeleteCircleDialog
+              isDialogOpened={isOpen}
+              handleCloseDialog={() => setIsOpen(false)}
+              circleData={circleData}
+              user={user}
+            />
+          </Box>
+        </Box>
+      </Paper>
+    </>
+  )
+}
+
+function DeleteCircleDialog({
+  isDialogOpened,
+  handleCloseDialog,
+  circleData,
+  user,
+}) {
+  const [fullWidth] = useState(true)
+  const [maxWidth] = useState('sm')
+  const [isDeleting, setIsDeleting] = useState(false)
+  const handleClose = () => {
+    handleCloseDialog(false)
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    if (!isDeleting) {
+      console.log('Deleting Circle')
+      return
+    }
+    try {
+      await deleteCircle({
+        name: circleData.name,
+        admin: circleData.admin,
+        user,
+      })
+      window.location.replace(`/circle`)
+    } catch {
+      setIsDeleting(false)
+    }
+  }
+
+  const handleOnChangeInput = value => {
+    if (value === circleData.name) {
+      setIsDeleting(true)
+    } else {
+      setIsDeleting(false)
+    }
+  }
+
+  return (
+    <React.Fragment>
+      <Dialog
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+        open={isDialogOpened}
+        onClose={handleClose}
+        aria-labelledby="max-width-dialog-title"
+      >
+        <DialogTitle>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <Typography variant="h5">Are you absolutely sure?</Typography>
+            <IconButton
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+            >
+              <CloseIcon
+                sx={{
+                  fontSize: '25px',
+                  padding: '0',
+                }}
+              />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Box>
+            <Typography
+              variant="h6"
+              sx={{
+                fontSize: '17px',
+              }}
+              color="text.primary"
+              gutterBottom
+            >
+              This action cannot be undone. This will permanently delete the{' '}
+              <strong>{circleData?.name}</strong> Circle, posts, questions,
+              answers, and remove all members.
+            </Typography>
+            <Typography
+              sx={{
+                marginTop: '30px',
+                fontSize: '17px',
+              }}
+              color="text.primary"
+              gutterBottom
+            >
+              Please type <strong>{circleData?.name}</strong> to confirm.
+            </Typography>
+          </Box>
+          <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+            <TextField
+              id="outlined-basic"
+              variant="outlined"
+              fullWidth
+              // helperText={}
+              margin="normal"
+              // value={}
+              onChange={e => handleOnChangeInput(e.target.value)}
+              // error={}
+              required
+            />
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            sx={{
+              padding: '10px 20px',
+              margin: '0 14px',
+              textTransform: 'initial',
+            }}
+            fullWidth
+            color="error"
+            disabled={!isDeleting}
+            onClick={handleSubmit}
+            variant="contained"
+          >
+            I understand the consequences, delete this Circle.
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
   )
 }
 
