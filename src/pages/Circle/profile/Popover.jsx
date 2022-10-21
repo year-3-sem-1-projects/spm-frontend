@@ -34,7 +34,7 @@ export default function CustomPopover({
       >
         <Link
           to={`/circle/${name}/${role.toLowerCase()}/dashboard/${
-            role === 'admin' ? 'settings' : 'people'
+            role === 'Admin' ? 'settings' : 'people'
           }`}
         >
           {content}
