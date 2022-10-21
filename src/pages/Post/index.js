@@ -8,36 +8,37 @@ import CreateIcon from '@mui/icons-material/Create'
 import BarChartIcon from '@mui/icons-material/BarChart'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import FilterOptions from '../../components/FilterOptions/FilterOptions.jsx'
+import FilterOptions from '../../components/FilterOptions/FilterOptions'
 import { Container, Paper, Typography } from '@mui/material'
 import PostComponent from '../../components/Post/PostComponent'
 import { readPost } from '../../services/Post'
 import Loading from '../../components/Loading/Loading'
 import PostPanel from '../../components/PostPanel/PostPanel'
 import GetCurrentUser from '../../hooks/getCurrentUser'
-// import SearchPost from './SearchPost'
-
-
+import SearchAppBar from './SearchPost'
 
 const Index = () => {
-  const user = GetCurrentUser();
+  const currentUser = GetCurrentUser()
   const [postData, setPostData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
   useEffect(() => {
-    readPost()
-      .then(res => {
-        setPostData(res)
-        setLoading(false)
-      })
-      .catch(err => {
-        console.log(err)
-        setError(true)
-        setLoading(false)
-        setPostData([])
-      })
-  }, [])
+    console.log('currentUser', currentUser)
+    if (currentUser !== undefined) {
+      readPost()
+        .then(res => {
+          setPostData(res)
+          setLoading(false)
+        })
+        .catch(err => {
+          console.log(err)
+          setError(true)
+          setLoading(false)
+          setPostData([])
+        })
+    }
+  }, [currentUser])
 
   console.log('all posts', postData)
 
@@ -45,12 +46,12 @@ const Index = () => {
     {
       name: 'Recommended Posts',
       icon: <AutoAwesomeIcon />,
-      link: 'recommended',
+      link: '/',
     },
     {
       name: 'My Posts',
       icon: <QuizIcon />,
-      link: 'my',
+      link: '/user',
     },
     // {
     //   name: 'My Answers',
@@ -60,9 +61,10 @@ const Index = () => {
     {
       name: 'Stats',
       icon: <BarChartIcon />,
-      link: 'stats',
+      link: '/stats',
     },
   ]
+
   if (loading) {
     return <Loading loading={loading} />
   } else if (error) {
@@ -108,8 +110,7 @@ const Index = () => {
                   marginBottom: '40px',
                 }}
               >
-                {user ? 
-                <PostPanel /> : null}
+                {currentUser ? <PostPanel /> : null}
                 <Paper className={`p-4`}>
                   <Typography
                     variant="h6"
@@ -117,8 +118,7 @@ const Index = () => {
                       fontWeight: 'bold',
                     }}
                   >
-                    Search
-                    {/* <SearchPost /> */}
+                    <SearchAppBar />
                   </Typography>
                   <Box
                     sx={{
@@ -135,14 +135,14 @@ const Index = () => {
             </Grid>
 
             <Grid item md={3} zeroMinWidth>
-              <Grid
+              {/* <Grid
                 item
                 sx={{
                   marginBottom: '40px',
                 }}
               >
                 <AddPost />
-              </Grid>
+              </Grid> */}
               <Grid item className={`pb-10`} zeroMinWidth>
                 <FilterOptions />
               </Grid>
