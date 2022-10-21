@@ -23,6 +23,9 @@ const Login = () => {
       })
       .catch(err => console.error(err))
   }
+  const onLoginClick = () => {
+    navigate('/login')
+  }
   return (
     <div className="flex justify-center items-center ">
       <div className="flex flex-col flex-1 bg-black justify-center h-screen">
@@ -53,6 +56,9 @@ const Login = () => {
           />
           <button className="bg-[#ffbb00] mt-10 font-bold w-1/4 h-10 rounded-[5px] flex justify-center items-center text-base">
             Register
+          </button>
+          <button className="bg-[#987d31] mt-10 font-bold w-1/4 h-10 rounded-[5px] flex justify-center items-center text-base" onClick={onLoginClick}>
+            Login
           </button>
         </form>
       </div>
