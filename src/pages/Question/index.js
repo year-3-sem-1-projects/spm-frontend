@@ -17,41 +17,30 @@ import GetCurrentUser from '../../hooks/getCurrentUser';
 
 const Index = () => {
 
-  const currentUser = GetCurrentUser();
+  const currentUser = GetCurrentUser()
   const [questionData, setQuestionData] = useState([])
-  const [userInterestsData, setUserInterestsData] = useState([])
-  const [loading, setLoaidng] = useState(true)
+  // const [userInterestsData, setUserInterestsData] = useState([])
+  // const [filterData, setFilterData] = useState([])
+  // const [filterOptions, setFilterOptions] = useState(['NONE'])
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
-  let recommendedQuestions = []
 
   useEffect(() => {
-    if(currentUser !== undefined) {
+    console.log('currentUser', currentUser)
+    if (currentUser !== undefined) {
       readAllQuestions()
         .then(res => {
+          console.log('Read all questions res: ', res)
           setQuestionData(res)
-          if(currentUser.email !== undefined) {
-            getUserInterests(currentUser.email)
-              .then(res => {  
-                setUserInterestsData(res)  
-              })
-              .catch(err => {
-                console.log('Error: ', err)
-                setError(true)
-              })
-            }
-            setLoaidng(false)
+          setLoading(false)
         })
         .catch(err => {
+          console.log('Error in reading all questions: ', err)
           setError(true)
-          setLoaidng(false)
+          setLoading(false)
         })
     }
   }, [currentUser])
-  if(userInterestsData.interests) {
-    recommendedQuestions = questionData.filter(question => {
-      return userInterestsData.interests.includes(question.category)
-    })
-  }
 
   const items = [
     {
@@ -141,7 +130,7 @@ const Index = () => {
                   </Paper>
                 </Grid>
                 <Grid item zeroMinWidth>
-                  {recommendedQuestions.map((data) => (
+                  {questionData.map((data) => (
                     <QuestionComponent data={data} />
                   ))}
                 </Grid>
