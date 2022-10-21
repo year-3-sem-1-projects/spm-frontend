@@ -8,7 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { deleteQuestion } from '../../services/Question';
 
-export default function DeleteQuestionDialog({ isDeleteDialogOpen, handleCloseDeleteDialog, deleteData }) {
+export default function DeleteQuestionDialog({ isDeleteDialogOpen, handleCloseDeleteDialog, deleteData, setQuestionData }) {
 
     const [fullWidth] = useState(true);
     const [maxWidth] = useState("sm");
@@ -17,8 +17,10 @@ export default function DeleteQuestionDialog({ isDeleteDialogOpen, handleCloseDe
     handleCloseDeleteDialog();
   };
 
-  async function handleDelete(deleteData) {
+  async function handleDelete() {
+    console.log('THIS IS THE DELETE DATA::::::', deleteData)
     const result = await deleteQuestion(deleteData)
+    setQuestionData(prev => prev.filter(question => question._id !== deleteData._id))
     console.log(result);
     handleCloseDeleteDialog();
   }
