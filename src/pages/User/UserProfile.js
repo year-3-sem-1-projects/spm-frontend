@@ -8,15 +8,20 @@ import { readPost } from '../../services/Post'
 import GetCurrentUser from '../../hooks/getCurrentUser'
 import jwt_decode from 'jwt-decode'
 import EditUserDialog from './EditUserDialog'
+import { useNavigate } from 'react-router-dom'
 
 const UserProfile = () => {
   const user = jwt_decode(localStorage.getItem('token')).data
-  
+  const navigate = useNavigate()
+
   // GetCurrentUser();
   const [postData, setPostData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const [profilePic, setProfilePic] = useState(user.photo_url)
+  const [coverPic, setCoverPic] = useState(user.cover_photo_url)
+  const [username, setUsername] = useState(user.username)
 
   const handleOpen = () => {
     setIsOpen(!isOpen)
@@ -34,6 +39,7 @@ const UserProfile = () => {
         setLoading(false)
         setPostData([])
       })
+      navigate('/user')
   }, [])
 
   return (
@@ -41,9 +47,9 @@ const UserProfile = () => {
       <Navbar />
       <div className="flex flex-col px-28">
         <div className=" relative flex">
-          {user.cover_photo_url ? (
+          {coverPic ? (
             <img
-              src={user.cover_photo_url}
+              src={coverPic}
               alt="Cover"
               className="h-[20rem] w-[85rem]"
             />
@@ -57,10 +63,10 @@ const UserProfile = () => {
             </div>
           )}
           <div className="absolute h-24 w-24 bg-blue-400 -bottom-5 left-8">
-            {user.photo_url ? (
+            {profilePic ? (
               <Avatar
                 alt="Profile Picture"
-                src={user.photo_url}
+                src={profilePic}
                 sx={{ width: 100, height: 100 }}
                 variant="square"
               />
@@ -76,7 +82,7 @@ const UserProfile = () => {
         </div>
         <div className="h-7 w-full mt-10 flex justify-between">
           <span className="text-2xl font-inter font-bold">
-            @{user.username}
+            @{username}
           </span>
           <button
             className="bg-[#1976D2] text-white p-2 flex text-center items-center rounded-sm"
@@ -88,6 +94,9 @@ const UserProfile = () => {
             isDialogOpened={isOpen}
             handleCloseDialog={() => setIsOpen(false)}
             user={user}
+            setProfilePic={setProfilePic}
+            setCoverPic={setCoverPic}
+            setUsername={setUsername}
           />
         </div>
       </div>
