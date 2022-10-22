@@ -32,12 +32,17 @@ export default function EditUserDialog({
   const [coverImageURL, setCoverImageURL] = useState(user.cover_photo_url)
   const [usernameD, setUsernameD] = useState()
 
-//   const handleChange = e => {
-//     setFile(e.target.files[0])
-//   }
-//   const handleCoverChange = e => {
-//     setcoverImage(e.target.files[0])
-//   }
+  const handleChange = async e => {
+    try {
+      setImageURL(await imageUpload(e.target.files[0], 'user'))
+      
+    } catch (error) {
+      
+    }
+  }
+  const handleCoverChange = e => {
+    setcoverImage(e.target.files[0])
+  }
   const handleClose = () => {
     handleCloseDialog(false)
   }
@@ -48,9 +53,12 @@ export default function EditUserDialog({
     // window.location.reload()
     navigate('/login')
   }
+
+
   async function handleSubmit(e) {
     e.preventDefault()
     handleCloseDialog(false)
+
     // if (file) {
     //   imageUpload(file, 'user').then(res => {
     //     setImageURL(res)
@@ -137,6 +145,7 @@ export default function EditUserDialog({
               onChange={e => {
                 setFile(e.target.files[0])
                 if(file){
+                  console.log('upload file:::::::::::::::', file)
                 imageUpload(file, 'user').then(res => {
                     setImageURL(res)
                     console.log("did it upload", res)
@@ -155,16 +164,7 @@ export default function EditUserDialog({
             Upload Cover Photo
             <input
               type="file"
-              onChange={e => {
-                setcoverImage(e.target.files[0])
-                if(coverImage){
-                    imageUpload(coverImage, 'user').then(res => {
-                        setCoverImageURL(res)
-                      })
-                    } else {
-                      setCoverImageURL(user.cover_photo_url)
-                    }
-              }}
+              onChange={handleChange}
               accept="/image/*"
               hidden
             />
