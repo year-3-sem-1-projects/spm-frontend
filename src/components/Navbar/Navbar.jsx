@@ -23,6 +23,7 @@ import CustomizedMenus from './CustomMenu'
 import { useEffect, useState } from 'react'
 import jwt_decode from 'jwt-decode'
 import { useNavigate } from 'react-router-dom'
+import { getUser } from '../../services/User'
 
 const ICON_SIZE = 'medium'
 const pages = ['', 'Question/recommended', 'Circle']
@@ -55,8 +56,10 @@ const ResponsiveAppBar = () => {
 
   useEffect(() => {
     if (currentUser) {
-      const decodedToken = jwt_decode(currentUser)
-      setUSER(decodedToken.data)
+      const emailAdd = jwt_decode(currentUser).data.email
+      getUser({email: emailAdd }).then((res) => {
+        setUSER(res.data.data)
+      })
     } else {
       setUSER(unregisteredUser)
     }
@@ -174,24 +177,44 @@ const ResponsiveAppBar = () => {
               ))}
             </Box>
             {localStorage.getItem('token') ? null : (
-              <Button
-                key="/login"
-                onClick={handleCloseNavMenu}
-                sx={[
-                  {
-                    display: { xs: 'none', md: 'flex' },
-                  backgroundColor: '#ff9f05',
-                    my: 2,
-                    color: 'white',
-                    // display: 'block',
-                    marginLeft: '60px',
-                  },
-                ]}
-              >
-                <Link style={{ width: '100%' }} to={`/login`}>
-                  <Typography>Login</Typography>
-                </Link>
-              </Button>
+              <div>
+                <Button
+                  key="/login"
+                  onClick={handleCloseNavMenu}
+                  sx={[
+                    {
+                      display: { xs: 'none', md: 'flex' },
+                      backgroundColor: '#ff9f05',
+                      my: 2,
+                      color: 'white',
+                      // display: 'block',
+                      marginLeft: '60px',
+                    },
+                  ]}
+                >
+                  <Link style={{ width: '100%' }} to={`/login`}>
+                    <Typography>Login</Typography>
+                  </Link>
+                </Button>
+                <Button
+                  key="/register"
+                  onClick={handleCloseNavMenu}
+                  sx={[
+                    {
+                      display: { xs: 'none', md: 'flex' },
+                      backgroundColor: '#ff9f05',
+                      my: 2,
+                      color: 'white',
+                      // display: 'block',
+                      marginLeft: '60px',
+                    },
+                  ]}
+                >
+                  <Link style={{ width: '100%' }} to={`/register`}>
+                    <Typography>Register</Typography>
+                  </Link>
+                </Button>
+              </div>
             )}
             {/* user for big screen*/}
             <Box
