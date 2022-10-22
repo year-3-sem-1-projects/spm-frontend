@@ -1,10 +1,11 @@
-// import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-const StatsSection = () => {
+
+const StatSection = () => {
     return (
       <>
         Stats Section
       </>
     )
   }
-  export default StatsSection
+  export default StatSection

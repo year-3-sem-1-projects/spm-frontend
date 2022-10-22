@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
@@ -19,18 +19,28 @@ import AddAnswer from '../../pages/Question/AddAnswer'
 // import GetCurrentUser from '../../hooks/getCurrentUser';
 import jwt_decode from 'jwt-decode'
 import { Link } from 'react-router-dom'
+import { getAnswersByQuestion } from '../../services/Question'
 
 export default function QuestionComponent({ data, setQuestionData }) {
-  console.log('DATA:::::', data)
+  
   // const currentUser = GetCurrentUser()
   const currentUser = jwt_decode(localStorage.getItem('token')).data
-  // console.log('currentUser in Question', currentUser)
+  const [answerCount, setAnswerCount] = useState([])
 
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
 
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+useEffect(() => {
+    getAnswersByQuestion(data._id)
+      .then((res) => {
+        console.log('answer count in question component', res)
+        setAnswerCount(res.length)
+        console.log('answer count in question component', answerCount)
+      })
+      .catch((err) => console.log(err))
+  }, [data._id, answerCount])
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
@@ -52,10 +62,10 @@ export default function QuestionComponent({ data, setQuestionData }) {
   }
 
   const handleAnswerCount = () => {
-    if (data.answerCount > 1) {
-      return `${data.answerCount} Answers`
-    } else if (data.answerCount === 1) {
-      return `${data.answerCount} Answer`
+    if (answerCount > 1) {
+      return `${answerCount} Answers`
+    } else if (answerCount === 1) {
+      return `${answerCount} Answer`
     } else {
       return 'Not Yet Answered'
     }

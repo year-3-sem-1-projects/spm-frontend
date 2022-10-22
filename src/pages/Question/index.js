@@ -17,21 +17,34 @@ import { readAllQuestions } from '../../services/Question'
 import Loading from '../../components/Loading/Loading'
 import { Route, Routes } from 'react-router-dom'
 import jwt_decode from 'jwt-decode'
-
+import StatSection from './StatSection'
 
 const Index = () => {
-
+  const currentUser = jwt_decode(localStorage.getItem('token')).data
   const [questionData, setQuestionData] = useState([])
   const [filterData, setFilterData] = useState([])
+  const [filterOptions, setFilterOptions] = useState(['ALL'])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
   useEffect(() => {
+    if (currentUser) {
       readAllQuestions()
         .then(res => {
           console.log('Read all questions res: ', res)
           setQuestionData(res)
-          setFilterData(res)
+          if (filterOptions.includes('ALL')) {
+            setFilterData(res)
+          } else {
+            setFilterData(
+              res.filter(question => {
+                if (filterOptions.includes(question.category)) {
+                  return question
+                }
+                return null
+              }),
+            )
+          }
           setLoading(false)
         })
         .catch(err => {
@@ -39,15 +52,25 @@ const Index = () => {
           setError(true)
           setLoading(false)
         })
-  }, [])
-const handleSearch = (e) => {
-  console.log('searching')
-  console.log(e)
-  if (e === '') return setFilterData(questionData)
-  setFilterData(
-    questionData.filter(data => data.question.toLowerCase().includes(e.toLowerCase()))
-  )
-}
+    }
+  }, [filterOptions])
+  const handleSearch = e => {
+    console.log('searching')
+    console.log(e)
+    if (e === '') return setFilterData(questionData)
+    setFilterData(
+      questionData.filter(data =>
+        data.question.toLowerCase().includes(e.toLowerCase()),
+      ),
+    )
+  }
+  const handleClickCategory = (category, checked) => {
+    if (checked) {
+      setFilterOptions([...filterOptions, category])
+    } else {
+      setFilterOptions(filterOptions.filter(option => option !== category))
+    }
+  }
   const items = [
     {
       name: 'Recommended Questions',
@@ -116,19 +139,17 @@ const handleSearch = (e) => {
                 }}
               >
                 <Paper className={`p-4`}>
-               
-                   <Box>
-            <TextField
-            sx={{height: '30px', marginBottom: '12px'}}
-              fullWidth
-              id="outlined-basic"
-              placeholder={`Search for questions`}
-              variant="outlined"
-              dense
-              onChange={e => handleSearch(e.target.value)}
-            />
-          </Box>
-   
+                  <Box>
+                    <TextField
+                      sx={{ height: '30px', marginBottom: '12px' }}
+                      fullWidth
+                      id="outlined-basic"
+                      placeholder={`Search for questions`}
+                      variant="outlined"
+                      dense
+                      onChange={e => handleSearch(e.target.value)}
+                    />
+                  </Box>
                   <Box
                     sx={{
                       marginTop: '10px',
@@ -140,12 +161,28 @@ const handleSearch = (e) => {
                 <Routes>
                   <Route
                     path="/recommended"
-                    element={<QuestionSection questionData={filterData} setQuestionData={setQuestionData} />}
+                    element={
+                      <QuestionSection
+                        questionData={filterData}
+                        setQuestionData={setQuestionData}
+                      />
+                    }
                   />
-                  <Route path="/my" element={<MyQuestionSection questionData={questionData} setQuestionData={setQuestionData} />} />
+                  <Route
+                    path="/my"
+                    element={
+                      <MyQuestionSection
+                        questionData={questionData}
+                        setQuestionData={setQuestionData}
+                      />
+                    }
+                  />
                   <Route path="/answers" element={<AnswerSection />} />
-                  <Route path="/stats" element={<StatsSection />} />
-                  <Route path={`/question-and-answers/:questionId`} element={<QuestionAndAnswers />} />
+                  <Route path="/stats" element={<StatSection />} />
+                  <Route
+                    path={`/question-and-answers/:questionId`}
+                    element={<QuestionAndAnswers />}
+                  />
                 </Routes>
               </Grid>
             </Grid>
@@ -159,7 +196,10 @@ const handleSearch = (e) => {
                 <AddQuestion setQuestionData={setQuestionData} />
               </Grid>
               <Grid item className={`pb-10`} zeroMinWidth>
-                <FilterOptions />
+                <FilterOptions 
+                  handleClick={handleClickCategory}
+                  isDefaultChecked={true}
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -168,7 +208,7 @@ const handleSearch = (e) => {
     )
   }
 }
-const QuestionSection = ({ questionData , setQuestionData }) => {
+const QuestionSection = ({ questionData, setQuestionData }) => {
   return (
     <>
       {questionData.map(data => (
@@ -179,14 +219,18 @@ const QuestionSection = ({ questionData , setQuestionData }) => {
 }
 const MyQuestionSection = ({ questionData, setQuestionData }) => {
   console.log('questionData IN MY QUESTIONS SECTION:::', questionData)
-  const currentUser = jwt_decode(localStorage.getItem('token')).data;
-  const [myQuestionData, setMyQuestionData] = useState(questionData.filter(data => data.user_email === currentUser.email))
+  const currentUser = jwt_decode(localStorage.getItem('token')).data
+  const [myQuestionData, setMyQuestionData] = useState(
+    questionData.filter(data => data.user_email === currentUser.email),
+  )
   useEffect(() => {
-    setMyQuestionData(questionData.filter(data => data.user_email === currentUser.email)) 
+    setMyQuestionData(
+      questionData.filter(data => data.user_email === currentUser.email),
+    )
   }, [questionData])
   return (
     <>
-       {myQuestionData.map(data => (
+      {myQuestionData.map(data => (
         <QuestionComponent data={data} setQuestionData={setQuestionData} />
       ))}
     </>
