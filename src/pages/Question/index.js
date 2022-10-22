@@ -20,23 +20,18 @@ import jwt_decode from 'jwt-decode'
 
 
 const Index = () => {
-  // const currentUser = GetCurrentUser()
-  const currentUser = jwt_decode(localStorage.getItem('token')).data;
+
   const [questionData, setQuestionData] = useState([])
-  // const [myQuestionData, setMyQuestionData] = useState([])
-  // const [userInterestsData, setUserInterestsData] = useState([])
-  // const [filterData, setFilterData] = useState([])
-  // const [filterOptions, setFilterOptions] = useState(['NONE'])
+  const [filterData, setFilterData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
   useEffect(() => {
-    // console.log('currentUser', currentUser)
-    // if (currentUser !== undefined) {
       readAllQuestions()
         .then(res => {
           console.log('Read all questions res: ', res)
           setQuestionData(res)
+          setFilterData(res)
           setLoading(false)
         })
         .catch(err => {
@@ -44,25 +39,12 @@ const Index = () => {
           setError(true)
           setLoading(false)
         })
-      // readQuestionByUser(currentUser.email)
-      // .then(res => {
-      //   console.log('Read all questions by user res: ', res)
-      //   setMyQuestionData(res)
-      //   setLoading(false)
-      // })
-      // .catch(err => {
-      //   console.log('Error in reading all questions by user: ', err)
-      //   setError(true)
-      //   setLoading(false)
-      // })
-    // }
   }, [])
-// console.log('user questions:::::::::::::::::', myQuestionData)
 const handleSearch = (e) => {
   console.log('searching')
   console.log(e)
-  if (e === '') return setQuestionData(questionData)
-  setQuestionData(
+  if (e === '') return setFilterData(questionData)
+  setFilterData(
     questionData.filter(data => data.question.toLowerCase().includes(e.toLowerCase()))
   )
 }
@@ -158,7 +140,7 @@ const handleSearch = (e) => {
                 <Routes>
                   <Route
                     path="/recommended"
-                    element={<QuestionSection questionData={questionData} setQuestionData={setQuestionData} />}
+                    element={<QuestionSection questionData={filterData} setQuestionData={setQuestionData} />}
                   />
                   <Route path="/my" element={<MyQuestionSection questionData={questionData} setQuestionData={setQuestionData} />} />
                   <Route path="/answers" element={<AnswerSection />} />
@@ -207,14 +189,6 @@ const MyQuestionSection = ({ questionData, setQuestionData }) => {
        {myQuestionData.map(data => (
         <QuestionComponent data={data} setQuestionData={setQuestionData} />
       ))}
-    </>
-  )
-}
-
-const StatsSection = () => {
-  return (
-    <>
-      Stats Section
     </>
   )
 }
