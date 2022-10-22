@@ -28,9 +28,10 @@ export const updateQuestion = async (questionContent) => {
 }
 
 //question delete function
-export const deleteQuestion = async (questionContent) => {
+export const deleteQuestion = async questionContent => {
+    console.log('questionContent in deleteQuestion', questionContent._id)
     try {
-        return (await axios.delete('/api/question/delete', questionContent)).data.data
+        return await axios.delete(`/api/question/delete/${questionContent._id}`)
     } catch (err) {
         console.error(err)
     }
