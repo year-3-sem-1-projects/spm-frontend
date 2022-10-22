@@ -5,45 +5,57 @@ import ProgressPanel from '../../components/ProgressPanel/ProgressPanel'
 import Avatar from '@mui/material/Avatar'
 import PostComponent from '../../components/Post/PostComponent'
 import { readPost } from '../../services/Post'
-import GetCurrentUser from '../../hooks/getCurrentUser'
+import { getUser } from '../../services/User'
 import jwt_decode from 'jwt-decode'
 import EditUserDialog from './EditUserDialog'
+import { useNavigate } from 'react-router-dom'
 
 const UserProfile = () => {
-  const user = jwt_decode(localStorage.getItem('token')).data
-  
-  // GetCurrentUser();
+  const userdata = jwt_decode(localStorage.getItem('token')).data
+  const navigate = useNavigate()
+
   const [postData, setPostData] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
+  const [user, setUser] = useState(userdata)
   const [isOpen, setIsOpen] = useState(false)
+  const [profilePic, setProfilePic] = useState(userdata.photo_url)
+  const [coverPic, setCoverPic] = useState(userdata.cover_photo_url)
+  const [username, setUsername] = useState(userdata.username)
 
   const handleOpen = () => {
     setIsOpen(!isOpen)
   }
 
+  // getUser({email: user.email}).then((res) => {
+  //   setUSER(res.data.data)
+  // })
   useEffect(() => {
+    getUser({email: user.email}).then((res) => {
+      setProfilePic(res.data.data.photo_url)
+      setUsername(res.data.data.username)
+      setCoverPic(res.data.data.cover_photo_url)
+      setUser(res.data.data)
+      
+    })
     readPost()
       .then(res => {
         setPostData(res)
-        setLoading(false)
       })
       .catch(err => {
         console.log(err)
-        setError(true)
-        setLoading(false)
         setPostData([])
       })
+      navigate('/user')
   }, [])
 
+  console.log(profilePic)
   return (
     <div>
       <Navbar />
       <div className="flex flex-col px-28">
         <div className=" relative flex">
-          {user.cover_photo_url ? (
+          {coverPic ? (
             <img
-              src={user.cover_photo_url}
+              src={coverPic}
               alt="Cover"
               className="h-[20rem] w-[85rem]"
             />
@@ -57,13 +69,16 @@ const UserProfile = () => {
             </div>
           )}
           <div className="absolute h-24 w-24 bg-blue-400 -bottom-5 left-8">
-            {user.photo_url ? (
+            {profilePic ? (
+              <div>
+                {console.log}
               <Avatar
                 alt="Profile Picture"
-                src={user.photo_url}
+                src={profilePic}
                 sx={{ width: 100, height: 100 }}
                 variant="square"
               />
+              </div>
             ) : (
               <Avatar
                 alt="Profile Picture"
@@ -76,7 +91,7 @@ const UserProfile = () => {
         </div>
         <div className="h-7 w-full mt-10 flex justify-between">
           <span className="text-2xl font-inter font-bold">
-            @{user.username}
+            @{username}
           </span>
           <button
             className="bg-[#1976D2] text-white p-2 flex text-center items-center rounded-sm"
@@ -88,6 +103,9 @@ const UserProfile = () => {
             isDialogOpened={isOpen}
             handleCloseDialog={() => setIsOpen(false)}
             user={user}
+            // setProfilePic={setProfilePic}
+            // setCoverPic={setCoverPic}
+            // setUsername={setUsername}
           />
         </div>
       </div>
