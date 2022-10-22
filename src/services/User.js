@@ -19,3 +19,12 @@ export const updateUser = async data => {
   const response = await axios.post('/api/user/editUser', data)
   return response
 }
+
+export const getUser = async data => {
+  const response = await axios.post('/api/user/getOneUser', data)
+  return response
+}
+export const deleteUser = async data => {
+  const response = await axios.post('/api/user/delete', data)
+  return response
+}

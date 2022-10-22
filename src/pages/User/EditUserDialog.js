@@ -8,7 +8,8 @@ import {
   TextField,
 } from '@mui/material'
 import React, { useState } from 'react'
-import { updateUser } from '../../services/User'
+import { useNavigate } from 'react-router-dom'
+import { updateUser, deleteUser } from '../../services/User'
 import imageUpload from '../../utils/imageUpload'
 // import SimpleSnackbar from '../../components/Notifications/Snackbar'
 
@@ -16,10 +17,11 @@ export default function EditUserDialog({
   isDialogOpened,
   user,
   handleCloseDialog,
-  setProfilePic,
-  setCoverPic,
-  setUsername
+  // setProfilePic,
+  // setCoverPic,
+  // setUsername
 }) {
+  const navigate = useNavigate()
   const [fullWidth] = useState(true)
   const [maxWidth] = useState('sm')
   //   const [message, setMessage] = useState('')
@@ -28,7 +30,7 @@ export default function EditUserDialog({
   const [imageURL, setImageURL] = useState(user.photo_url)
   const [coverImage, setcoverImage] = useState('')
   const [coverImageURL, setCoverImageURL] = useState(user.cover_photo_url)
-  const [usernameD, setUsernameD] = useState(user.username)
+  const [usernameD, setUsernameD] = useState()
 
 //   const handleChange = e => {
 //     setFile(e.target.files[0])
@@ -39,7 +41,13 @@ export default function EditUserDialog({
   const handleClose = () => {
     handleCloseDialog(false)
   }
-
+  async function deleteone() {
+    const result = await deleteUser({ email: user.email })
+    alert(result.data.message)
+    localStorage.removeItem('token')
+    // window.location.reload()
+    navigate('/login')
+  }
   async function handleSubmit(e) {
     e.preventDefault()
     handleCloseDialog(false)
@@ -70,15 +78,21 @@ export default function EditUserDialog({
       photo_url: imageURL,
       cover_photo_url: coverImageURL,
     }
-    updateUser(data).then(res => {
+    
+    const res = await updateUser(data)
+    console.log('res', res.data)
       alert(res.data.message)
-      setProfilePic(imageURL)
-      setCoverPic(coverImageURL)
-      setUsername(usernameD)
+      // setProfilePic(imageURL)
+      // setCoverPic(coverImageURL)
+      // setUsername(usernameD)
+      setImageURL(imageURL)
+      setCoverImageURL(coverImageURL)
       setFile()
       setcoverImage()
-
-    })
+      console.log('imageURL', imageURL)
+      console.log('coverImageURL', coverImageURL)
+      window.location.reload()
+    
   }
 
   return (
@@ -112,7 +126,7 @@ export default function EditUserDialog({
             // defaultValue={user.username}
             fullWidth
             variant="outlined"
-            onChange={e => setUsername(e.target.value)}
+            onChange={e => setUsernameD(e.target.value)}
           />
           <br />
           <br />
@@ -125,6 +139,7 @@ export default function EditUserDialog({
                 if(file){
                 imageUpload(file, 'user').then(res => {
                     setImageURL(res)
+                    console.log("did it upload", res)
                   })
                 } else {
                   setImageURL(user.photo_url)
@@ -163,6 +178,7 @@ export default function EditUserDialog({
         <Button onClick={handleSubmit}>Edit</Button>
       </DialogActions>
       {/* {open ? <SimpleSnackbar message={message} /> : null} */}
+      <Button onClick={deleteone}>Delete User</Button>
     </Dialog>
   )
 }
