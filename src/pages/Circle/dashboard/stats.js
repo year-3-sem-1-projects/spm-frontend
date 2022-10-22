@@ -1,43 +1,44 @@
 import React from 'react'
+import BarChart from '../../../components/charts/BarChart'
 
-const stats = () => {
-  const myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-      datasets: [
-        {
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)',
-          ],
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true,
-        },
+export default function CircleChart() {
+  const data = {
+    labels: [
+      'October 16',
+      'October 17 ',
+      'October 18',
+      'October 19',
+      'October 20',
+      'October 21',
+      'October 22',
+    ],
+    datasets: [
+      {
+        type: 'line',
+        label: 'Member Count',
+        backgroundColor: [
+          'rgba(75,192,192,1)',
+          '#50AF95',
+          '#f3ba2f',
+          '#2a71d0',
+          '#f3ba2f',
+          '#2a71d0',
+          '#f3ba2f',
+        ],
+        borderColor: 'black',
+        borderWidth: 1,
+        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+        hoverBorderColor: 'rgba(255,99,132,1)',
+        data: [0, 1, 5, 19, 10, 4, 1],
       },
-    },
-  })
-  return <></>
-}
+    ],
+  }
 
-export default stats
+  return (
+    <>
+      <div>
+        <BarChart data={data} />
+      </div>
+    </>
+  )
+}
