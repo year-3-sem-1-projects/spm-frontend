@@ -177,7 +177,7 @@ const Profile = () => {
                   }}
                 >
                   <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                    Component
+                    {`Welcome to ${profile.name}`}
                   </Typography>
                   <img src={EMPTY_BOX} alt="no content to display" srcset="" />
                   <Typography variant="h5" sx={{ fontWeight: 'bold' }}>

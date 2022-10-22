@@ -38,6 +38,7 @@ const Settings = () => {
   const [circleImage, setCircleImage] = useState('')
   const [circleCoverImage, setCircleCoverImage] = useState('')
   const [circleDetails, setCircleDetails] = useState('')
+  const [circleDetailsError, setCircleDetailsError] = useState('')
   const [circleNameError, setCircleNameError] = useState(false)
   const [circleNameExistsError, setCircleNameExistsError] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -134,6 +135,9 @@ const Settings = () => {
           <CircleDetails
             circleDetails={circleDetails}
             setCircleDetails={setCircleDetails}
+            circleDetailsError={circleDetailsError}
+            circleAdmin={circleAdmin}
+            user={user}
           />
         </Box>
         <Box
@@ -242,14 +246,14 @@ const GeneralSettings = ({
               value={newCircleName}
               autoFocus
               onChange={event => handleOnChangeInputName(event.target.value)}
-              // error={circleNameError}
-              // helperText={
-              //   circleNameError
-              //     ? 'Circle name should have atleast 5 characters'
-              //     : circleNameExistsError
-              //     ? 'Circle name already exists'
-              //     : ''
-              // }
+              error={circleNameError}
+              helperText={
+                circleNameError
+                  ? 'Circle name should have atleast 5 characters'
+                  : circleNameExistsError
+                  ? 'Circle name already exists'
+                  : ''
+              }
               sx={{
                 marginBottom: '20px',
               }}
@@ -273,7 +277,14 @@ const GeneralSettings = ({
                 justifyContent: 'flex-end',
               }}
             >
-              <Button variant="text" type="reset">
+              <Button
+                variant="text"
+                type="reset"
+                onClick={() => {
+                  setNewCircleName(circleName)
+                  setNewCircleDescription(circleDescription)
+                }}
+              >
                 Reset
               </Button>
               <Button
@@ -294,7 +305,14 @@ const GeneralSettings = ({
   )
 }
 
-const CircleDetails = ({ circleDetails, setCircleDetails }) => {
+const CircleDetails = ({
+  circleDetails,
+  setCircleDetails,
+  circleDetailsError,
+  circleAdmin,
+  user,
+}) => {
+  const [newCircleDetails, setNewCircleDetails] = useState(circleDetails)
   const handleSubmit = e => {
     e.preventDefault()
   }
@@ -320,8 +338,8 @@ const CircleDetails = ({ circleDetails, setCircleDetails }) => {
               label="Details"
               variant="outlined"
               fullWidth
-              value={circleDetails}
-              onChange={event => setCircleDetails(event.target.value)}
+              value={newCircleDetails}
+              onChange={event => setNewCircleDetails(event.target.value)}
               sx={{
                 marginBottom: '20px',
               }}
@@ -332,7 +350,10 @@ const CircleDetails = ({ circleDetails, setCircleDetails }) => {
                 justifyContent: 'flex-end',
               }}
             >
-              <Button variant="text" type="reset">
+              <Button
+                variant="text"
+                onClick={() => setNewCircleDetails(circleDetails)}
+              >
                 Reset
               </Button>
               <Button

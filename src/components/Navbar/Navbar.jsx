@@ -40,30 +40,31 @@ const settingList = {
 
 const LOGO = 'Edupox'
 
-const unregisteredUser = {
-  id: '001',
-  username: 'Toshinori Yagi',
-  image: 'https://i.redd.it/8lczu2vop1911.jpg',
-}
+// const unregisteredUser = {
+//   id: '001',
+//   username: 'Toshinori Yagi',
+//   image: 'https://i.redd.it/8lczu2vop1911.jpg',
+// }
 
 const ResponsiveAppBar = () => {
   const navigate = useNavigate()
 
-  const currentUser = localStorage.getItem('token')
-  const [USER, setUSER] = useState(unregisteredUser)
+  const [USER, setUSER] = useState(
+    jwt_decode(localStorage.getItem('token')).data,
+  )
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
 
-  useEffect(() => {
-    if (currentUser) {
-      const emailAdd = jwt_decode(currentUser).data.email
-      getUser({email: emailAdd }).then((res) => {
-        setUSER(res.data.data)
-      })
-    } else {
-      setUSER(unregisteredUser)
-    }
-  }, [currentUser])
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     const emailAdd = jwt_decode(currentUser).data.email
+  //     getUser({ email: emailAdd }).then(res => {
+  //       setUSER(res.data.data)
+  //     })
+  //   } else {
+  //     setUSER({})
+  //   }
+  // }, [currentUser])
   const handleOpenNavMenu = event => {
     setAnchorElNav(event.currentTarget)
   }
