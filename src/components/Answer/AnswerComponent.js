@@ -56,6 +56,7 @@ export default function AnswerComponent({ isMyAnswers, data }) {
                     aria-label="answer votes"
                     color="inherit"
                     size="small"
+                    disabled={isMyAnswers}
                 >
                   <Button> <ArrowUpwardOutlinedIcon /></Button>
                   <Button> <ArrowDownwardOutlinedIcon /></Button>    
