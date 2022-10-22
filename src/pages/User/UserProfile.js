@@ -6,7 +6,6 @@ import Avatar from '@mui/material/Avatar'
 import PostComponent from '../../components/Post/PostComponent'
 import { readPost } from '../../services/Post'
 import { getUser } from '../../services/User'
-import GetCurrentUser from '../../hooks/getCurrentUser'
 import jwt_decode from 'jwt-decode'
 import EditUserDialog from './EditUserDialog'
 import { useNavigate } from 'react-router-dom'
@@ -17,12 +16,10 @@ const UserProfile = () => {
 
   const [postData, setPostData] = useState([])
   const [user, setUser] = useState(userdata)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
-  const [profilePic, setProfilePic] = useState(user.photo_url)
-  const [coverPic, setCoverPic] = useState(user.cover_photo_url)
-  const [username, setUsername] = useState(user.username)
+  const [profilePic, setProfilePic] = useState(userdata.photo_url)
+  const [coverPic, setCoverPic] = useState(userdata.cover_photo_url)
+  const [username, setUsername] = useState(userdata.username)
 
   const handleOpen = () => {
     setIsOpen(!isOpen)
@@ -37,21 +34,20 @@ const UserProfile = () => {
       setUsername(res.data.data.username)
       setCoverPic(res.data.data.cover_photo_url)
       setUser(res.data.data)
+      
     })
     readPost()
       .then(res => {
         setPostData(res)
-        setLoading(false)
       })
       .catch(err => {
         console.log(err)
-        setError(true)
-        setLoading(false)
         setPostData([])
       })
       navigate('/user')
   }, [])
 
+  console.log(profilePic)
   return (
     <div>
       <Navbar />
@@ -74,12 +70,15 @@ const UserProfile = () => {
           )}
           <div className="absolute h-24 w-24 bg-blue-400 -bottom-5 left-8">
             {profilePic ? (
+              <div>
+                {console.log}
               <Avatar
                 alt="Profile Picture"
                 src={profilePic}
                 sx={{ width: 100, height: 100 }}
                 variant="square"
               />
+              </div>
             ) : (
               <Avatar
                 alt="Profile Picture"
