@@ -14,6 +14,7 @@ export default function DeleteQuestionDialog({
   deleteData,
   setQuestionData,
 }) {
+  console.log('DELETE DATA IN DELETE DIALOG:::', deleteData)
   const [fullWidth] = useState(true)
   const [maxWidth] = useState('sm')
 
