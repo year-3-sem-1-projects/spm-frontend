@@ -25,7 +25,7 @@ const Index = () => {
   const [questionData, setQuestionData] = useState([])
   // const [myQuestionData, setMyQuestionData] = useState([])
   // const [userInterestsData, setUserInterestsData] = useState([])
-  // const [filterData, setFilterData] = useState([])
+  const [filterData, setFilterData] = useState([])
   // const [filterOptions, setFilterOptions] = useState(['NONE'])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -37,6 +37,7 @@ const Index = () => {
         .then(res => {
           console.log('Read all questions res: ', res)
           setQuestionData(res)
+          setFilterData(res)
           setLoading(false)
         })
         .catch(err => {
@@ -61,8 +62,8 @@ const Index = () => {
 const handleSearch = (e) => {
   console.log('searching')
   console.log(e)
-  if (e === '') return setQuestionData(questionData)
-  setQuestionData(
+  if (e === '') return setFilterData(questionData)
+  setFilterData(
     questionData.filter(data => data.question.toLowerCase().includes(e.toLowerCase()))
   )
 }
@@ -158,7 +159,7 @@ const handleSearch = (e) => {
                 <Routes>
                   <Route
                     path="/recommended"
-                    element={<QuestionSection questionData={questionData} setQuestionData={setQuestionData} />}
+                    element={<QuestionSection questionData={filterData} setQuestionData={setQuestionData} />}
                   />
                   <Route path="/my" element={<MyQuestionSection questionData={questionData} setQuestionData={setQuestionData} />} />
                   <Route path="/answers" element={<AnswerSection />} />
