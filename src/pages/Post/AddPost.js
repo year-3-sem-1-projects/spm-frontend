@@ -3,7 +3,7 @@ import Button from '@mui/material/Button'
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark'
 import AddPostDialog from '../../components/Post/AddPostDialog'
 
-export default function AddPost() {
+export default function AddPost({ setPostData }) {
   const [isOpen, setIsOpen] = useState(false)
 
   const handleOpen = () => {
@@ -15,6 +15,7 @@ export default function AddPost() {
       <AddPostDialog
         isDialogOpened={isOpen}
         handleCloseDialog={() => setIsOpen(false)}
+        setPostData={setPostData}
       />
       <Button
         fullWidth

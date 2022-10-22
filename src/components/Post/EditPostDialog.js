@@ -14,6 +14,7 @@ export default function EditPostDialog({
   isEditDialogOpen,
   handleCloseEditDialog,
   editData,
+  setPostData,
 }) {
   const currentUser = GetCurrentUser()
 
@@ -50,9 +51,16 @@ export default function EditPostDialog({
         description: description,
         category: category,
         img: img,
+        user_email: currentUser.email,
+        username: currentUser.username,
       }
       console.log('edit dataaaaaaaa', data)
       const result = await updatePost(data)
+      setPostData(prev => {
+        const index = prev.findIndex(item => item._id === editData._id)
+        prev[index] = data
+        return [...prev]
+      })
       console.log(result)
     }
     handleCloseEditDialog()
@@ -67,7 +75,7 @@ export default function EditPostDialog({
         onClose={handleCloseEditDialog}
         aria-labelledby="max-width-dialog-title"
       >
-        <DialogTitle>Add Your Post</DialogTitle>
+        <DialogTitle>Edit Your Post</DialogTitle>
         <form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <DialogContent>
             {/* user component */}

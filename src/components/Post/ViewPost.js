@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Dialog from '@mui/material/Dialog'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
 import { CardActionArea } from '@mui/material'
-import DialogContent from '@mui/material/DialogContent'
-import DialogTitle from '@mui/material/DialogTitle'
-import Dialog from '@mui/material/Dialog'
 
 export default function ViewPost({ isDialogOpened, handleCloseDialog, data }) {
   console.log('dataaaaaa', data)
@@ -16,6 +16,8 @@ export default function ViewPost({ isDialogOpened, handleCloseDialog, data }) {
   const handleClose = () => {
     handleCloseDialog(false)
   }
+
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <React.Fragment>

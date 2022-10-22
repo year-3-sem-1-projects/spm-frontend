@@ -12,6 +12,7 @@ export default function DeletePostDialog({
   isDeleteDialogOpen,
   handleCloseDeleteDialog,
   deleteData,
+  setPostData,
 }) {
   const [fullWidth] = useState(true)
   const [maxWidth] = useState('sm')
@@ -20,8 +21,10 @@ export default function DeletePostDialog({
     handleCloseDeleteDialog()
   }
 
-  async function handleDelete(deleteData) {
+  async function handleDelete() {
+    console.log('THIS IS THE DELETE DATA::::::', deleteData)
     const result = await deletePost(deleteData)
+    setPostData(prev => prev.filter(post => post._id !== deleteData._id))
     console.log(result)
     handleCloseDeleteDialog()
   }

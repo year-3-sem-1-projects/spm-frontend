@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Post from './pages/Post/index'
+import MyPost from './pages/MyPost/index'
+import Chart from './pages/PostStats/index'
 import Question from './pages/Question/index'
 import Circle from './pages/Circle/index'
 import Login from './pages/Auth/Login'
@@ -23,7 +25,7 @@ const App = () => {
   //     try {
   //       const decodedToken = jwt_decode(currentUser)
   //       setUser(decodedToken.data)
-      
+
   //     } catch (error) {
   //       setError(true)
   //     } finally {
@@ -37,26 +39,22 @@ const App = () => {
   // if (loading) {
   //   return <Loading loading={loading} />
   // } else {
-    
+
   // }
 
-  const currentUser = GetCurrentUser();
+  const currentUser = GetCurrentUser()
 
   return (
     <Routes>
       <Route path="/" element={<Post />} />
+      <Route path="/myposts" element={<MyPost />} />
+      <Route path="/stats" element={<Chart />} />
       <Route path="/question/*" element={<Question />} />
       <Route path="/circle/*" element={<Circle />} />
       <Route path="/verify" element={<Verify />} />
       <Route path="/login" element={currentUser ? <Post /> : <Login />} />
-      <Route
-        path="/register"
-        element={currentUser ? <Post /> : <Register />}
-      />
-      <Route
-        path="/user"
-        element={currentUser ? <UserProfile /> : <Login />}
-      />
+      <Route path="/register" element={currentUser ? <Post /> : <Register />} />
+      <Route path="/user" element={currentUser ? <UserProfile /> : <Login />} />
       <Route path="/interest" element={<Interest />} />
       {/* element={currentUser==null ? <Login /> :} */}
     </Routes>

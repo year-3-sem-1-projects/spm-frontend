@@ -30,11 +30,11 @@ import jwt_decode from 'jwt-decode'
 // import Checkbox from '@material-ui/core/Checkbox'
 // import Favorite from '@material-ui/icons/Favorite'
 
-export default function PostComponent({ data }) {
+export default function PostComponent({ data, setPostData }) {
   console.log('dataaaaaa', data)
 
   const currentUser = jwt_decode(localStorage.getItem('token')).data
-  console.log('currentUser in post', currentUser)
+  //console.log('currentUser in post', currentUser)
 
   const [isOpen, setIsOpen] = useState(false)
 
@@ -109,11 +109,13 @@ export default function PostComponent({ data }) {
         deleteData={data}
         isDeleteDialogOpen={isDeleteOpen}
         handleCloseDeleteDialog={setIsDeleteOpen}
+        setPostData={setPostData}
       />
       <EditPostDialog
         editData={data}
         isEditDialogOpen={isEditOpen}
         handleCloseEditDialog={handleEdit}
+        setPostData={setPostData}
       />
       <ViewPost
         isDialogOpened={isOpen}
@@ -206,7 +208,9 @@ export default function PostComponent({ data }) {
           </IconButton>
         </Box>
         <hr />
+        {/* <CardOverflow>{data.description}</CardOverflow> */}
         <CardOverflow>{data.description}</CardOverflow>
+
         <CardOverflow>
           <AspectRatio>
             <img src={data.img} alt="" loading="lazy" />
@@ -279,7 +283,7 @@ export default function PostComponent({ data }) {
         <Button onClick={dislikef}>Dislike {dislike}</Button> */}
 
         <Typography fontWeight="sm">
-          created At:{Date(data.created_at).toString().slice(3, 15)}
+          Last updated At:{Date(data.edited_at).toString().slice(3, 15)}
         </Typography>
         <CardOverflow sx={{ p: 'var(--Card-padding)', display: 'flex' }}>
           <Chip
