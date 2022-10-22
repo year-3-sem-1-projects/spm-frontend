@@ -184,7 +184,7 @@ const Index = () => {
                     }
                   />
                   <Route path="/answers" element={<AnswerSection />} />
-                  <Route path="/stats" element={<StatSection />} />
+                  <Route path="/stats" element={<StatSection questionData={questionData} />} />
                   <Route
                     path={`/question-and-answers/:questionId`}
                     element={<QuestionAndAnswers />}
