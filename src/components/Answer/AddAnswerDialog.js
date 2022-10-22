@@ -7,7 +7,6 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import GetCurrentUser from '../../hooks/getCurrentUser'
 import { postAnswer } from '../../services/Question'
-
 export default function AddAnswerDialog({ isDialogOpened, handleCloseDialog, data }) {
 
   const currentUser = GetCurrentUser()
@@ -42,13 +41,17 @@ export default function AddAnswerDialog({ isDialogOpened, handleCloseDialog, dat
         question_id: questionData._id,
         user_email: currentUser.email,
       }
-      const result = await postAnswer(answerContent)
-      console.log('THIS IS THE RESULT AFTER ADDING Q::::::', result)
-      handleCloseDialog(false);
+      try {
+        const result = await postAnswer(answerContent)
+        handleCloseDialog(false);
+        console.log('result: ', result)
+      } catch (error) {
+      }
     }
   }
 
   return (
+    <>
     <React.Fragment>
       <Dialog
         fullWidth={fullWidth}
@@ -85,5 +88,6 @@ export default function AddAnswerDialog({ isDialogOpened, handleCloseDialog, dat
         </form>
       </Dialog>
     </React.Fragment>
+    </>
   )
 }

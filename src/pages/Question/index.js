@@ -18,27 +18,47 @@ import Loading from '../../components/Loading/Loading'
 import { Route, Routes } from 'react-router-dom'
 import jwt_decode from 'jwt-decode'
 import StatSection from './StatSection'
+import FeedbackSnackbar from '../../components/Snackbar/FeedbackSnackbar'
 
 const Index = () => {
+  const currentUser = jwt_decode(localStorage.getItem('token')).data
   const [questionData, setQuestionData] = useState([])
   const [filterData, setFilterData] = useState([])
+  const [filterOptions, setFilterOptions] = useState(['ALL'])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  // const [success, setSuccess] = useState(false)
+  const [feedbackMessage, setFeedbackMessage] = useState('')
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+
 
   useEffect(() => {
-    readAllQuestions()
-      .then(res => {
-        console.log('Read all questions res: ', res)
-        setQuestionData(res)
-        setFilterData(res)
-        setLoading(false)
-      })
-      .catch(err => {
-        console.log('Error in reading all questions: ', err)
-        setError(true)
-        setLoading(false)
-      })
-  }, [])
+    if (currentUser) {
+      readAllQuestions()
+        .then(res => {
+          console.log('Read all questions res: ', res)
+          setQuestionData(res)
+          if (filterOptions.includes('ALL')) {
+            setFilterData(res)
+          } else {
+            setFilterData(
+              res.filter(question => {
+                if (filterOptions.includes(question.category)) {
+                  return question
+                }
+                return null
+              }),
+            )
+          }
+          setLoading(false)
+        })
+        .catch(err => {
+          console.log('Error in reading all questions: ', err)
+          setError(true)
+          setLoading(false)
+        })
+    }
+  }, [filterOptions])
   const handleSearch = e => {
     console.log('searching')
     console.log(e)
@@ -48,6 +68,13 @@ const Index = () => {
         data.question.toLowerCase().includes(e.toLowerCase()),
       ),
     )
+  }
+  const handleClickCategory = (category, checked) => {
+    if (checked) {
+      setFilterOptions([...filterOptions, category])
+    } else {
+      setFilterOptions(filterOptions.filter(option => option !== category))
+    }
   }
   const items = [
     {
@@ -128,7 +155,6 @@ const Index = () => {
                       onChange={e => handleSearch(e.target.value)}
                     />
                   </Box>
-
                   <Box
                     sx={{
                       marginTop: '10px',
@@ -144,6 +170,7 @@ const Index = () => {
                       <QuestionSection
                         questionData={filterData}
                         setQuestionData={setQuestionData}
+                        setFilterData={setFilterData}
                       />
                     }
                   />
@@ -157,7 +184,7 @@ const Index = () => {
                     }
                   />
                   <Route path="/answers" element={<AnswerSection />} />
-                  <Route path="/stats" element={<StatSection />} />
+                  <Route path="/stats" element={<StatSection questionData={questionData} />} />
                   <Route
                     path={`/question-and-answers/:questionId`}
                     element={<QuestionAndAnswers />}
@@ -172,23 +199,27 @@ const Index = () => {
                   marginBottom: '40px',
                 }}
               >
-                <AddQuestion setQuestionData={setQuestionData} />
+                <AddQuestion setQuestionData={setQuestionData} setFilterData={setFilterData} setOpenSnackbar={setOpenSnackbar} setFeedbackMessage={setFeedbackMessage} />
               </Grid>
               <Grid item className={`pb-10`} zeroMinWidth>
-                <FilterOptions />
+                <FilterOptions 
+                  handleClick={handleClickCategory}
+                  isDefaultChecked={true}
+                />
               </Grid>
             </Grid>
           </Grid>
         </Container>
+        <FeedbackSnackbar isOpen={openSnackbar} snackbarMessage={feedbackMessage} />
       </>
     )
   }
 }
-const QuestionSection = ({ questionData, setQuestionData }) => {
+const QuestionSection = ({ questionData, setQuestionData, setFilterData }) => {
   return (
     <>
       {questionData.map(data => (
-        <QuestionComponent data={data} setQuestionData={setQuestionData} />
+        <QuestionComponent data={data} setQuestionData={setQuestionData} setFilterData={setFilterData} />
       ))}
     </>
   )

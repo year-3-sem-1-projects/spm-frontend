@@ -13,6 +13,7 @@ export default function DeleteQuestionDialog({
   handleCloseDeleteDialog,
   deleteData,
   setQuestionData,
+  setFilterData,
 }) {
   console.log('DELETE DATA IN DELETE DIALOG:::', deleteData)
   const [fullWidth] = useState(true)
@@ -26,6 +27,9 @@ export default function DeleteQuestionDialog({
     console.log('THIS IS THE DELETE DATA::::::', deleteData)
     const result = await deleteQuestion(deleteData)
     setQuestionData(prev =>
+      prev.filter(question => question._id !== deleteData._id),
+    )
+    setFilterData(prev =>
       prev.filter(question => question._id !== deleteData._id),
     )
     console.log(result)
