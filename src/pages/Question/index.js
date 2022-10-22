@@ -11,12 +11,13 @@ import Grid from '@mui/material/Grid'
 import FilterOptions from '../../components/FilterOptions/FilterOptions.jsx'
 import { Container, Paper, Typography } from '@mui/material'
 import QuestionComponent from '../../components/Question/QuestionComponent'
-import { readAllQuestions, getUserInterests, readQuestionByUser } from '../../services/Question'
+import AnswerComponent from '../../components/Answer/AnswerComponent'
+import QuestionAndAnswers from './QuestionAndAnswers'
+import { readAllQuestions } from '../../services/Question'
 import Loading from '../../components/Loading/Loading'
-// import GetCurrentUser from '../../hooks/getCurrentUser'
 import { Route, Routes } from 'react-router-dom'
 import jwt_decode from 'jwt-decode'
-import { ConstructionOutlined } from '@mui/icons-material'
+
 
 const Index = () => {
   // const currentUser = GetCurrentUser()
@@ -149,6 +150,7 @@ const Index = () => {
                   <Route path="/my" element={<MyQuestionSection questionData={questionData} setQuestionData={setQuestionData} />} />
                   <Route path="/answers" element={<AnswersSection />} />
                   <Route path="/stats" element={<StatsSection />} />
+                  <Route path={`/question-and-answers/:questionId`} element={<QuestionAndAnswers />} />
                 </Routes>
               </Grid>
             </Grid>
@@ -198,7 +200,7 @@ const MyQuestionSection = ({ questionData, setQuestionData }) => {
 const AnswersSection = () => {
   return (
     <>
-      Answers Section
+      <AnswerComponent isMyAnswers={true} />
     </>
   )
 }
@@ -209,4 +211,5 @@ const StatsSection = () => {
     </>
   )
 }
+
 export default Index
