@@ -56,3 +56,19 @@ export const joinCircle = async data => {
     console.error(err)
   }
 }
+
+export const assignAdmin = async data => {
+  try {
+    return await axios.put(`/api/circle/update/admin`, data)
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const removeMember = async data => {
+  try {
+    return await axios.delete(`/api/circle/remove/member`, { data })
+  } catch (err) {
+    console.error(err)
+  }
+}
