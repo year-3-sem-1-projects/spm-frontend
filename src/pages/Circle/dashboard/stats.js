@@ -29,7 +29,7 @@ export default function CircleChart() {
         borderWidth: 1,
         hoverBackgroundColor: 'rgba(255,99,132,0.4)',
         hoverBorderColor: 'rgba(255,99,132,1)',
-        data: [19, 5, 15, 20, 3, 3, 5],
+        data: [0, 1, 5, 19, 10, 4, 1],
       },
     ],
   }
