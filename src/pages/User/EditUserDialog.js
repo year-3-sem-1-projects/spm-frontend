@@ -16,23 +16,26 @@ export default function EditUserDialog({
   isDialogOpened,
   user,
   handleCloseDialog,
+  setProfilePic,
+  setCoverPic,
+  setUsername
 }) {
   const [fullWidth] = useState(true)
   const [maxWidth] = useState('sm')
   //   const [message, setMessage] = useState('')
   //   const [open, setOpen] = useState(false)
   const [file, setFile] = useState('')
-  const [imageURL, setImageURL] = useState()
+  const [imageURL, setImageURL] = useState(user.photo_url)
   const [coverImage, setcoverImage] = useState('')
-  const [coverImageURL, setCoverImageURL] = useState()
-  const [username, setUsername] = useState(user.username)
+  const [coverImageURL, setCoverImageURL] = useState(user.cover_photo_url)
+  const [usernameD, setUsernameD] = useState(user.username)
 
-  const handleChange = e => {
-    setFile(e.target.files[0])
-  }
-  const handleCoverChange = e => {
-    setcoverImage(e.target.files[0])
-  }
+//   const handleChange = e => {
+//     setFile(e.target.files[0])
+//   }
+//   const handleCoverChange = e => {
+//     setcoverImage(e.target.files[0])
+//   }
   const handleClose = () => {
     handleCloseDialog(false)
   }
@@ -40,32 +43,41 @@ export default function EditUserDialog({
   async function handleSubmit(e) {
     e.preventDefault()
     handleCloseDialog(false)
-    if (file) {
-      await imageUpload(file).then(res => {
-        setImageURL(res)
-        console.log(imageURL)
-      })
-    } else {
-        setImageURL(user.photo_url)
-    }
+    // if (file) {
+    //   imageUpload(file, 'user').then(res => {
+    //     setImageURL(res)
+    //     console.log("res", res)
+    //   })
+    // } else {
+    //   setImageURL(user.photo_url)
+    // }
 
-    if (coverImage) {
-        await imageUpload(coverImage).then(res => {
-          setCoverImageURL(res)
-        })
-      } else {
-          setCoverImageURL(user.cover_photo_url)
-      }
-      console.log(imageURL)
-      console.log(coverImageURL)
+    // if (coverImage) {
+    //   imageUpload(coverImage, 'user').then(res => {
+    //     setCoverImageURL(res)
+    //     console.log('coverImage', res)
+    //   })
+    // } else {
+    //   setCoverImageURL(user.cover_photo_url)
+    // }
+
+    console.log('imageURL', imageURL)
+    console.log('coverImageURL', coverImageURL)
+
     const data = {
       email: user.email,
-      username: username,
+      username: usernameD,
       photo_url: imageURL,
       cover_photo_url: coverImageURL,
     }
-    await updateUser(data).then(res => {
+    updateUser(data).then(res => {
       alert(res.data.message)
+      setProfilePic(imageURL)
+      setCoverPic(coverImageURL)
+      setUsername(usernameD)
+      setFile()
+      setcoverImage()
+
     })
   }
 
@@ -97,7 +109,7 @@ export default function EditUserDialog({
             margin="dense"
             id="username"
             label="Username"
-            defaultValue={user.username}
+            // defaultValue={user.username}
             fullWidth
             variant="outlined"
             onChange={e => setUsername(e.target.value)}
@@ -108,7 +120,16 @@ export default function EditUserDialog({
             Upload Profile Picture
             <input
               type="file"
-              onChange={handleChange}
+              onChange={e => {
+                setFile(e.target.files[0])
+                if(file){
+                imageUpload(file, 'user').then(res => {
+                    setImageURL(res)
+                  })
+                } else {
+                  setImageURL(user.photo_url)
+                }
+              }}
               accept="/image/*"
               hidden
             />
@@ -119,7 +140,16 @@ export default function EditUserDialog({
             Upload Cover Photo
             <input
               type="file"
-              onChange={handleCoverChange}
+              onChange={e => {
+                setcoverImage(e.target.files[0])
+                if(coverImage){
+                    imageUpload(coverImage, 'user').then(res => {
+                        setCoverImageURL(res)
+                      })
+                    } else {
+                      setCoverImageURL(user.cover_photo_url)
+                    }
+              }}
               accept="/image/*"
               hidden
             />
