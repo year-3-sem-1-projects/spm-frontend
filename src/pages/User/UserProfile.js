@@ -5,17 +5,18 @@ import ProgressPanel from '../../components/ProgressPanel/ProgressPanel'
 import Avatar from '@mui/material/Avatar'
 import PostComponent from '../../components/Post/PostComponent'
 import { readPost } from '../../services/Post'
+import { getUser } from '../../services/User'
 import GetCurrentUser from '../../hooks/getCurrentUser'
 import jwt_decode from 'jwt-decode'
 import EditUserDialog from './EditUserDialog'
 import { useNavigate } from 'react-router-dom'
 
 const UserProfile = () => {
-  const user = jwt_decode(localStorage.getItem('token')).data
+  const userdata = jwt_decode(localStorage.getItem('token')).data
   const navigate = useNavigate()
 
-  // GetCurrentUser();
   const [postData, setPostData] = useState([])
+  const [user, setUser] = useState(userdata)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
@@ -27,7 +28,16 @@ const UserProfile = () => {
     setIsOpen(!isOpen)
   }
 
+  // getUser({email: user.email}).then((res) => {
+  //   setUSER(res.data.data)
+  // })
   useEffect(() => {
+    getUser({email: user.email}).then((res) => {
+      setProfilePic(res.data.data.photo_url)
+      setUsername(res.data.data.username)
+      setCoverPic(res.data.data.cover_photo_url)
+      setUser(res.data.data)
+    })
     readPost()
       .then(res => {
         setPostData(res)
@@ -94,9 +104,9 @@ const UserProfile = () => {
             isDialogOpened={isOpen}
             handleCloseDialog={() => setIsOpen(false)}
             user={user}
-            setProfilePic={setProfilePic}
-            setCoverPic={setCoverPic}
-            setUsername={setUsername}
+            // setProfilePic={setProfilePic}
+            // setCoverPic={setCoverPic}
+            // setUsername={setUsername}
           />
         </div>
       </div>
