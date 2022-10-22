@@ -10,7 +10,7 @@ import categories from '../../constants/categories'
 import GetCurrentUser from '../../hooks/getCurrentUser'
 import { createQuestion } from '../../services/Question'
 
-export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog, setQuestionData }) {
+export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog, setQuestionData, setFilterData, setOpenSnackbar, setSnackbarMessage }) {
 
   const currentUser = GetCurrentUser()
 
@@ -45,10 +45,18 @@ export default function AddQuestionDialog({ isDialogOpened, handleCloseDialog, s
         category: category,
         user_email: currentUser.email,
       }
-      const result = await createQuestion(questionContent)
-      console.log('THIS IS THE RESULT AFTER ADDING Q::::::', result)
-      setQuestionData(prev => [questionContent, ...prev])
-      handleCloseDialog(false);
+      try {
+        const result = await createQuestion(questionContent)
+        console.log('THIS IS THE RESULT AFTER ADDING Q::::::', result)
+        setQuestionData(prev => [questionContent, ...prev])
+        setFilterData(prev => [questionContent, ...prev])
+        handleCloseDialog(false);  
+        setOpenSnackbar(true);
+        setSnackbarMessage('Question added successfully!')
+      } catch (error) {
+        setOpenSnackbar(true);
+        setSnackbarMessage('Something went wrong!')
+      }
     }
   }
 

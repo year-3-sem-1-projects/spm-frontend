@@ -21,7 +21,7 @@ import jwt_decode from 'jwt-decode'
 import { Link } from 'react-router-dom'
 import { getAnswersByQuestion } from '../../services/Question'
 
-export default function QuestionComponent({ data, setQuestionData }) {
+export default function QuestionComponent({ data, setQuestionData, setFilterData }) {
   
   // const currentUser = GetCurrentUser()
   const currentUser = jwt_decode(localStorage.getItem('token')).data
@@ -78,12 +78,14 @@ useEffect(() => {
         isDeleteDialogOpen={isDeleteOpen}
         handleCloseDeleteDialog={setIsDeleteOpen}
         setQuestionData={setQuestionData}
+        setFilterData={setFilterData}
       />
       <EditQuestionDialog
         editData={data}
         isEditDialogOpen={isEditOpen}
         handleCloseEditDialog={handleEdit}
         setQuestionData={setQuestionData}
+        setFilterData={setFilterData}
       />
       {/* Question component card */}
       <Box

@@ -18,6 +18,7 @@ import Loading from '../../components/Loading/Loading'
 import { Route, Routes } from 'react-router-dom'
 import jwt_decode from 'jwt-decode'
 import StatSection from './StatSection'
+import FeedbackSnackbar from '../../components/Snackbar/FeedbackSnackbar'
 
 const Index = () => {
   const currentUser = jwt_decode(localStorage.getItem('token')).data
@@ -26,6 +27,10 @@ const Index = () => {
   const [filterOptions, setFilterOptions] = useState(['ALL'])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  // const [success, setSuccess] = useState(false)
+  const [feedbackMessage, setFeedbackMessage] = useState('')
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+
 
   useEffect(() => {
     if (currentUser) {
@@ -165,6 +170,7 @@ const Index = () => {
                       <QuestionSection
                         questionData={filterData}
                         setQuestionData={setQuestionData}
+                        setFilterData={setFilterData}
                       />
                     }
                   />
@@ -193,7 +199,7 @@ const Index = () => {
                   marginBottom: '40px',
                 }}
               >
-                <AddQuestion setQuestionData={setQuestionData} />
+                <AddQuestion setQuestionData={setQuestionData} setFilterData={setFilterData} setOpenSnackbar={setOpenSnackbar} setFeedbackMessage={setFeedbackMessage} />
               </Grid>
               <Grid item className={`pb-10`} zeroMinWidth>
                 <FilterOptions 
@@ -204,15 +210,16 @@ const Index = () => {
             </Grid>
           </Grid>
         </Container>
+        <FeedbackSnackbar isOpen={openSnackbar} snackbarMessage={feedbackMessage} />
       </>
     )
   }
 }
-const QuestionSection = ({ questionData, setQuestionData }) => {
+const QuestionSection = ({ questionData, setQuestionData, setFilterData }) => {
   return (
     <>
       {questionData.map(data => (
-        <QuestionComponent data={data} setQuestionData={setQuestionData} />
+        <QuestionComponent data={data} setQuestionData={setQuestionData} setFilterData={setFilterData} />
       ))}
     </>
   )

@@ -8,10 +8,14 @@ import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
 import ArrowDownwardOutlinedIcon from '@mui/icons-material/ArrowDownwardOutlined';
-import jwt_decode from 'jwt-decode';
-import { getAnswersByQuestion, getAnswersByUser } from '../../services/Question'
+// import jwt_decode from 'jwt-decode';
 
 export default function AnswerComponent({ isMyAnswers, data }) {
+  const [upvote, setUpvote] = useState(data.upvote)
+  const [downvote, setDownvote] = useState(data.downvote)
+  const [isUpvoted, setIsUpvoted] = useState(false)
+  const [isDownvoted, setIsDownvoted] = useState(false)
+  // const currentUser = jwt_decode(localStorage.getItem('token')).data
 
   return (
     <>
@@ -56,7 +60,6 @@ export default function AnswerComponent({ isMyAnswers, data }) {
                     aria-label="answer votes"
                     color="inherit"
                     size="small"
-                    disabled={isMyAnswers}
                 >
                   <Button> <ArrowUpwardOutlinedIcon /></Button>
                   <Button> <ArrowDownwardOutlinedIcon /></Button>    

@@ -3,7 +3,6 @@ import { getAnswersByQuestion, getQuestionByQuestionId } from '../../services/Qu
 import { useParams } from 'react-router-dom'
 import QuestionComponent from '../../components/Question/QuestionComponent'
 import AnswerComponent from '../../components/Answer/AnswerComponent'
-import { Typography } from '@mui/material'
 import jwt_decode from 'jwt-decode'
 
 const QuestionAndAnswers = () => {
@@ -33,15 +32,6 @@ const QuestionAndAnswers = () => {
   return (
     <>
       <QuestionComponent data={question} />
-      {/* <Typography
-        variant="h6"
-        sx={{
-          fontWeight: 'bold',
-          margin: 1,
-        }}
-      >
-        Answers
-      </Typography> */}
       {answers.map(answer => (
         <AnswerComponent data={answer} isMyAnswers={false} />
     ))}
